@@ -39,20 +39,18 @@
     }
   </style>
   <script type="text/javascript">
+
   var expenses = new Array
     $(document).ready(function() {
       var jqxhr = $.getJSON("accessibility_report.json", function(data) {
         // var expenses = JSON.parse(data);
         var expenses = new Array(data);
-          console.log(expenses);
         var expensesByName = d3.nest()
           .key(function(d) {
             return d.issue;
           })
           .entries(expenses);
-        console.log(expenses + "")
-        console.log(expensesByName[0])
-        console.log(expensesByName[0].values[0].element.node)
+        console.log(expenses)
         output = "<img src='./images/checkit.gif' />";
         output += "<table class='table table-bordered table-hover table-condensed'>";
         for (i = 0; i < expensesByName.length; i++) {
@@ -66,7 +64,7 @@
             output += "<tr>";
             output += "<td>" + expensesByName[i].values[e].heading + "</td>"
             output += "<td> " + expensesByName[i].values[e].NODENUMBER + "</td>";
-            var test = expensesByName[i].values[e].element.node;
+            var test = expensesByName[i].values[e];
             var start = "<xmp>";
             var end = "</xmp>";
             var whole = start + test + end;
