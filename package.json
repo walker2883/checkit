@@ -1,0 +1,24 @@
+{
+  "name": "wcag-testing",
+  "version": "1.0.0",
+  "description": "tests local drupal sites",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "bootstrap-table": "^1.8.1",
+    "grunt-pa11y": "^0.1.3",
+    "grunt-phantom": "^0.2.1",
+    "json-merge": "^1.2.0"
+  },
+  "dependencies": {
+    "access-sniff": "^1.1.2",
+    "grunt": "^0.4.5",
+    "grunt-accessibility": "^3.5.1",
+    "jsonfile": "^2.2.2",
+    "react-json-table": "0.0.2"
+  }
+}

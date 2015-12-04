@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC"-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="content-type" content="application/json; charset=utf-8" />
+    <title>WCAG CHECK IT</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.css">
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+
+<body>
+    <style>
+    table {
+        table-layout: fixed;
+        width: 500px;
+    }
+
+    img{margin:auto; display: block;}
+    </style>
+    <script type="text/javascript">
+    $(document).ready(function() {
+
+
+
+        var jqxhr = $.getJSON("accessibility_report.json", function(data) {
+
+
+            var expenses = data;
+
+            var expensesByName = d3.nest()
+                .key(function(d) {
+                    return d.issue;
+                })
+                .entries(expenses);
+
+            console.log(expensesByName)
+            console.log(expensesByName[0])
+
+            console.log(expensesByName[0].values[0].element.node)
+
+
+
+			output = "<img src='./images/checkit.gif' />";
+
+
+
+
+            output += "<table class='table table-bordered table-hover table-condensed'>";
+
+            for (i = 0; i < expensesByName.length; i++) {
+
+
+
+                output += "<tr class='warning'><td colspan='3'>" + expensesByName[i].key + "</tr>"
+
+
+
+                output += "<tr>";
+                output += "<td>Type </td>";
+                output += "<td>Node ID </td>"
+                output += "<td>HTML effected</td>"
+                output += "</tr>";
+
+
+
+
+
+                for (e = 0; e < expensesByName[i].values.length; e++) {
+
+
+                    output += "<tr>";
+
+
+
+
+                    output += "<td>" + expensesByName[i].values[e].heading + "</td>"
+                    output += "<td> " + expensesByName[i].values[e].nodenumber+ "</td>";
+
+
+                    var test = expensesByName[i].values[e].element.node;
+                    var start = "<xmp>";
+                    var end = "</xmp>";
+                    var whole = start + test + end;
+
+
+                    output += "<td>" + whole + "</td>"
+
+
+                    //output+="<td>" + expensesByName[i].values[e].element.node + "</td>" 
+
+                    output += "</tr>";
+
+
+
+
+
+                }
+            }
+
+            output += "</table>";
+
+
+
+
+
+            document.getElementById('test').innerHTML = output;
+
+
+
+
+
+        })
+
+
+
+    });
+    </script>
+
+
+
+    <div class="t" id="test">
+    	
+
+
+    </div>
+    <style>
+    .t {
+        width: 50%;
+        margin: auto;
+        padding: 2em;
+    }
+    xmp{white-space: inherit;margin: 0px;}
+    </style>
+
+
+</body>
+
+</html>
