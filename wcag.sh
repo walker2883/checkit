@@ -14,6 +14,7 @@ function GETVAR () {
 	URL=$(drush "${NAME}" "status" | grep "Site URI" | cut -d: -f2);
 	URL=${URL/  /};
 	URL=${URL/ /};
+	URL=$(echo $URL | cut -d " " -f1);
 	BASEPATH="${PWD}";
 }
 
@@ -34,7 +35,7 @@ function GENERATE_REPORT () {
 		resultarray+=("\"${URL}/node/${x}\",");
 	done
 	sed "s|$OLDpageholder|${resultarray[*]}|g" TemplatesTest/access.js >> ./checkthesefiles.js;
-	node checkthesefiles.js;
+	# node checkthesefiles.js;
 	for X in $(find ./reports/ | grep json); do
 		nodenum=${X%.*};
 		sed -i "s|\[|\"node_$nodenum\": \[|" ${X};
@@ -49,16 +50,16 @@ function GENERATE_REPORT () {
 		fi
 	done
 	sed -i -e "s|.$|}|" accessibility_report.json;
-	sed -i '1s|^|\{\n|' accessibility_report.json;
-	js-beautify accessibility_report.json;
+	sed -i -e "1s|^|\{\n|" accessibility_report.json;
+	# js-beautify accessibility_report.json;
 }
 
-# function CLEAN () {
-# 	# REMOVE FILES
-# 	# rm -f reports/*
-# 	# rm -f drupalpages
-# 	# rm checkthesefiles.js
-# }
+function CLEAN () {
+	# REMOVE FILES
+	# rm -f reports/*
+	# rm -f drupalpages
+	rm checkthesefiles.js
+}
 
 if [[ -n "${1}" ]] && [[ -n "${2}" ]]; then
 	GETVAR "${1}" "${2}";
@@ -68,4 +69,4 @@ elif [[ -z "${1}" ]]; then
 	GETVAR;
 fi
 GENERATE_REPORT;
-# CLEAN;
+CLEAN;
