@@ -34,14 +34,12 @@ function GENERATE_REPORT () {
 	for x in "${pages[@]}"; do
 		resultarray+=("\"http://${URL}/node/${x}\",");
 	done
-	resultarray+=("\"\"");
 	sed "s|$OLDpageholder|${resultarray[*]}|g" TemplatesTest/access.js >> ./checkthesefiles.js;
-	node checkthesefiles.js; # needs work
+	node checkthesefiles.js;
 	for X in $(find ./reports/ | grep json); do
 		nodenum=${X%.*};
-		sed -i "s|\[|\"node_$nodenum\": \[|" ${X};
-		sed -i -e "s|}\]|}\],|g" ${X};
-		echo "${X}";
+		sed "s|\[|\"node_$nodenum\": \[|" "${X}" > "${X}";
+		sed "s|}\]|}\],|g" "${X}" > "${X}";
 	done
 	echo "" > accessibility_report.json;
 	for X in $(find ./reports/ | grep json); do

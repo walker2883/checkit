@@ -16,7 +16,7 @@
     "json-merge": "^1.2.0"
   },
   "dependencies": {
-    "access-sniff": "^1.1.2",
+    "access-sniff": "*",
     "beautifier": "^0.1.7",
     "grunt": "^0.4.5",
     "grunt-accessibility": "^3.5.1",
