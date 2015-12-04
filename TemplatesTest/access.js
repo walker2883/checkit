@@ -1,6 +1,6 @@
 var accessSniff  = require('access-sniff');
 var files = [pagestested];
- 
+
 accessSniff.start(files, {
     accessibilityLevel: 'WCAG2A',
     reportType: 'json',
@@ -14,11 +14,4 @@ accessSniff.start(files, {
     }
   });
 
-  console.log('Your report can be found in the reports folder')
-
-
-
-
- 
-
-  
+  console.log('Your report can be found in the reports folder');
