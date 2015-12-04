@@ -34,7 +34,7 @@ function GENERATE_REPORT () {
 	for x in "${pages[@]}"; do
 		resultarray+=("\"http://${URL}/node/${x}\",");
 	done
-	resultarray+="";
+	resultarray+=("\"\"");
 	sed "s|$OLDpageholder|${resultarray[*]}|g" TemplatesTest/access.js >> ./checkthesefiles.js;
 	node checkthesefiles.js; # needs work
 	for X in $(find ./reports/ | grep json); do
@@ -57,9 +57,11 @@ function GENERATE_REPORT () {
 
 function CLEAN () {
 	# REMOVE FILES
-	rm -f reports/*
-	rm -f drupalpages
-	rm checkthesefiles.js
+	# rm -f reports/*;
+	# rm -f drupalpages;
+	# rm checkthesefiles.js;
+	rm -f *.json-e;
+	rm -f reports/*.json-e;
 }
 
 if [[ -n "${1}" ]] && [[ -n "${2}" ]]; then
