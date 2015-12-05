@@ -19,47 +19,46 @@ function GETVAR () {
 }
 
 function GENERATE_REPORT () {
+	rm -f accessibility_report.*;
 	touch "drupalpages";
 	if [[ ! "${NAME}" == "" ]]; then
 		drush "${NAME}" "sqlq" "SELECT nid FROM node  WHERE status=1" > "/${BASEPATH}/drupalpages";
 	else
 		drush "sqlq" "SELECT nid FROM node  WHERE status=1" > "/${BASEPATH}/drupalpages";
 	fi
-	# # Grab node ids and update access,js
+	# Grab node ids and update access,js
 	declare -a pages=($(cat drupalpages));
 	OLDpageholder="pagestested";
 	resultarray=();
 	# clear file
-	echo "" > ./checkthesefiles.js
+	echo "" > ./checkthesefiles.js;
+	echo "" > accessibility_report.json;
 	for x in "${pages[@]}"; do
 		resultarray+=("\"http://${URL}/node/${x}\",");
 	done
 	sed "s|$OLDpageholder|${resultarray[*]}|g" TemplatesTest/access.js >> ./checkthesefiles.js;
 	node checkthesefiles.js;
-	for X in $(find ./reports/ | grep json); do
-		nodenum=${X%.*};
-		sed "s|\[|\"node_$nodenum\": \[|" "${X}" > "${X}";
-		sed "s|}\]|}\],|g" "${X}" > "${X}";
+	# for X in $(find ./reports/* | grep json); do
+	# 	echo "${X}";
+	# 	nodenum=${X%.*};
+	# 	sed "s|\[|\"node_$nodenum\": \[|" "${X}" > "${X}";
+	# 	sed "s|}\]|}\],|g" "${X}" > "${X}";
+	# done
+	for X in "${pages[@]}"; do
+		cat "${BASEPATH}/reports/${X}.json" >> "${BASEPATH}/accessibility_report.json";
 	done
-	echo "" > accessibility_report.json;
-	for X in $(find ./reports/ | grep json); do
-		if [[ $(cat "$X") != "[]" ]];
-			then
-			cat "${X}" >> accessibility_report.json;
-		fi
-	done
-	sed -i -e "s|.$|}|" accessibility_report.json;
-	sed -i -e "1s|^|\{\n|" accessibility_report.json;
-	js-beautify accessibility_report.json > accessibility_report.json;
+	# sed -Ei "" 's|.$|}|' "${BASEPATH}/accessibility_report.json";
+	# sed -Ei "" '1s|^|\{\n|' "${BASEPATH}/accessibility_report.json";
+	sed -Ei "" 's|\}\]\[\{|\}\,\{|g' "${BASEPATH}/accessibility_report.json";
+	# js-beautify "${BASEPATH}/accessibility_report.json" > "${BASEPATH}/accessibility_report.json";
 }
 
 function CLEAN () {
 	# REMOVE FILES
-	# rm -f reports/*;
-	# rm -f drupalpages;
-	# rm checkthesefiles.js;
-	rm -f *.json-e;
-	rm -f reports/*.json-e;
+	rm -f reports/*;
+	rm -f drupalpages;
+	rm checkthesefiles.*;
+	rm -rf ./reports/;
 }
 
 if [[ -n "${1}" ]] && [[ -n "${2}" ]]; then
@@ -69,5 +68,6 @@ elif [[ -n "${1}" ]]; then
 elif [[ -z "${1}" ]]; then
 	GETVAR;
 fi
+
 GENERATE_REPORT;
-CLEAN;
+# CLEAN;
