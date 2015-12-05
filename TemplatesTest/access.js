@@ -2,10 +2,10 @@ var accessSniff  = require('access-sniff');
 var files = [pagestested];
 
 accessSniff.start(files, {
-    accessibilityLevel: 'WCAG2A',
+    accessibilityLevel: 'WCAG2AAA',
     reportType: 'json',
     reportLocation : 'reports',
-    domElement: false,
+    domElement: true,
     verbose:false,
     reportLevels: {
       notice: false,
