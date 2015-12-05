@@ -70,4 +70,4 @@ elif [[ -z "${1}" ]]; then
 fi
 
 GENERATE_REPORT;
-# CLEAN;
+CLEAN;
