@@ -21,6 +21,7 @@ function GETVAR () {
 function GENERATE_REPORT () {
 	rm -f accessibility_report.*;
 	touch "drupalpages";
+	mkdir -p "${BASEPATH}/reports";
 	if [[ ! "${NAME}" == "" ]]; then
 		drush "${NAME}" "sqlq" "SELECT nid FROM node  WHERE status=1" > "/${BASEPATH}/drupalpages";
 	else
@@ -38,19 +39,27 @@ function GENERATE_REPORT () {
 	done
 	sed "s|$OLDpageholder|${resultarray[*]}|g" TemplatesTest/access.js >> ./checkthesefiles.js;
 	node checkthesefiles.js;
-	# for X in $(find ./reports/* | grep json); do
-	# 	echo "${X}";
-	# 	nodenum=${X%.*};
-	# 	sed "s|\[|\"node_$nodenum\": \[|" "${X}" > "${X}";
-	# 	sed "s|}\]|}\],|g" "${X}" > "${X}";
-	# done
+	for X in $(find ./reports/* | grep json); do
+		X=${X/.\/reports\//};
+		X=${X/.json/};
+		echo "${X}";
+		nodenum=${X%.*};
+		sed -Ei "" 's|\[\{|\'\"node_$nodenum\"': \[\{|' "./reports/${X}.json";
+		data=$(cat "./reports/${X}.json");
+		echo "${data}," > "./reports/${X}.json";
+		js-beautify -rf "./reports/${X}.json";
+	done
+	lastitem"${#pages[@]}"
 	for X in "${pages[@]}"; do
 		cat "${BASEPATH}/reports/${X}.json" >> "${BASEPATH}/accessibility_report.json";
 	done
 	# sed -Ei "" 's|.$|}|' "${BASEPATH}/accessibility_report.json";
 	# sed -Ei "" '1s|^|\{\n|' "${BASEPATH}/accessibility_report.json";
 	sed -Ei "" 's|\}\]\[\{|\}\,\{|g' "${BASEPATH}/accessibility_report.json";
-	# js-beautify "${BASEPATH}/accessibility_report.json" > "${BASEPATH}/accessibility_report.json";
+	sed -Ei "" 's|\}\ \{|\}\,\{|g' "${BASEPATH}/accessibility_report.json";
+	data=$(cat "${BASEPATH}/accessibility_report.json");
+	echo "{${data}}" > "${BASEPATH}/accessibility_report.json";
+	js-beautify -rf "${BASEPATH}/accessibility_report.json";
 }
 
 function CLEAN () {
