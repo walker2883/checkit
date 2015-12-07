@@ -42,12 +42,12 @@ function GENERATE_REPORT () {
 	for X in $(find ./reports/* | grep json); do
 		X=${X/.\/reports\//};
 		X=${X/.json/};
-		echo "${X}";
+		# echo "${X}";
 		nodenum=${X%.*};
 		sed -Ei "" 's|\[\{|\'\"node_$nodenum\"': \[\{|' "./reports/${X}.json";
 		data=$(cat "./reports/${X}.json");
 		echo "${data}," > "./reports/${X}.json";
-		js-beautify -rf "./reports/${X}.json";
+		js-beautify -rqf "./reports/${X}.json";
 	done
 	for X in "${pages[@]}"; do
 		cat "${BASEPATH}/reports/${X}.json" >> "${BASEPATH}/accessibility_report.json";
@@ -58,7 +58,7 @@ function GENERATE_REPORT () {
 	sed -Ei "" 's|\}\ \{|\}\,\{|g' "${BASEPATH}/accessibility_report.json";
 	data=$(cat "${BASEPATH}/accessibility_report.json");
 	echo "{${data}}" > "${BASEPATH}/accessibility_report.json";
-	js-beautify -rf "${BASEPATH}/accessibility_report.json";
+	js-beautify -rqf "${BASEPATH}/accessibility_report.json";
 }
 
 function CLEAN () {
