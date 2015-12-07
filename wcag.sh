@@ -49,7 +49,6 @@ function GENERATE_REPORT () {
 		echo "${data}," > "./reports/${X}.json";
 		js-beautify -rf "./reports/${X}.json";
 	done
-	lastitem"${#pages[@]}"
 	for X in "${pages[@]}"; do
 		cat "${BASEPATH}/reports/${X}.json" >> "${BASEPATH}/accessibility_report.json";
 	done
