@@ -19,7 +19,7 @@
 <body>
     <style>
 
-
+body{padding:10px;}
     img{margin:auto; display: block;}
     </style>
     <script type="text/javascript">
@@ -53,7 +53,7 @@ output += "<table class='table table-bordered table-hover table-condensed'>";
         for (k in test){ 
            console.log(k)
            
-         output += "<tr class='warning'><td colspan='2'>" + k + "</td></tr>"  
+         output += "<tr class='warning'><td colspan='4'>" + k + "</td></tr>"  
            
             for(b=0; b < test[k].length; b++){
                 
@@ -68,13 +68,20 @@ output += "<table class='table table-bordered table-hover table-condensed'>";
 
 
                     output += "<td>" + wcagitem.heading + "</td>"
+                    output += "<td class=description>" + wcagitem.description + "</td>"
                     output += "<td> " + wcagitem.issue + "</td>";
+                    
+                    
 
 
-                    // var test = wcagitem[i].values[e].element.node;
-                    // var start = "<xmp>";
-                    // var end = "</xmp>";
-                    // var whole = start + test + end;
+                    console.log(wcagitem.element.node)
+
+                    var markup = wcagitem.element.node;
+                    var start = "<xmp>";
+                    var end = "</xmp>";
+                     var whole = start + markup + end;
+                    
+                     output += "<td>" + whole + "</td>";
 
 
                     // output += "<td>" + whole + "</td>"
@@ -128,12 +135,15 @@ output += "<table class='table table-bordered table-hover table-condensed'>";
 
     </div>
     <style>
-    .t {
-        width: 50%;
-        margin: auto;
-        padding: 2em;
-    }
+  
     xmp{white-space: inherit;margin: 0px;}
+    
+    .table{
+
+  width:960px;
+  word-wrap: break-word;
+
+}
     </style>
 
 
