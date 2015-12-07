@@ -25,7 +25,7 @@ for X in $(ls ./reports/); do
 nodenum=${X%.*};
 sed -i "s|\[|\"nodenumber $nodenum\"\[|" ./reports/${X};
 
-sed -i -e "s|}\]|}\],|g" ./reports/${X};
+sed -i -e "s|}\]|}\]\],|g" ./reports/${X};
 # sed -i -e "s|\]||g" ./reports/${X};
 # sed -i -e "s|\[||g" ./reports/${X};
 echo "${X}";

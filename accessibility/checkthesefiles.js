@@ -1,5 +1,6 @@
+
 var accessSniff  = require('access-sniff');
-var files = [pagestested];
+var files = ["http://checkit-walker2883.c9users.io/node/2", "http://checkit-walker2883.c9users.io/node/3",];
  
 accessSniff.start(files, {
     accessibilityLevel: 'WCAG2AA',

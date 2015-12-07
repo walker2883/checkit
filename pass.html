@@ -28,82 +28,81 @@
     <script type="text/javascript">
     $(document).ready(function() {
 
+      
 
 
-        var jqxhr = $.getJSON("accessibility_report.json", function(data) {
+        var jqxhr = $.getJSON("./accessibility/accessibility_report.json", function(data) {
 
 
-            var expenses = data.SITENAME;
+// console.log(data[0].nodenumber2[0].issue);
 
-            var expensesByName = d3.nest()
-                .key(function(d) {
-                    return d.issue;
-                })
-                .entries(expenses);
+var output;
 
-            console.log(expensesByName)
-            console.log(expensesByName[0])
-
-            console.log(expensesByName[0].values[0].element.node)
+  output = "<img src='./images/checkit.gif' />";
+output += "<table class='table table-bordered table-hover table-condensed'>";
 
 
-
-            output = "<img src='./images/checkit.gif' />";
-
-
-
-
-            output += "<table class='table table-bordered table-hover table-condensed'>";
-
-            for (i = 0; i < expensesByName.length; i++) {
+                // output += "<tr>";
+                // output += "<td>Type </td>";
+                // output += "<td>Node ID </td>"
+                // output += "<td>HTML effected</td>"
+                // output += "</tr>";
 
 
+ for (p in data) {
+        var test = data[p];
+        console.log(test)
 
-                output += "<tr class='warning'><td colspan='3'>" + expensesByName[i].key + "</tr>"
-
-
-
-                output += "<tr>";
-                output += "<td>Type </td>";
-                output += "<td>Node ID </td>"
-                output += "<td>HTML effected</td>"
-                output += "</tr>";
-
+        for (k in test){ 
+           console.log(k)
+           
+         output += "<tr class='warning'><td colspan='2'>" + k + "</td></tr>"  
+           
+            for(b=0; b < test[k].length; b++){
+                
+                
+            console.log(test[k][b].issue)
+            
+            var wcagitem = test[k][b];
+            
+                   output += "<tr>";
 
 
 
 
-                for (e = 0; e < expensesByName[i].values.length; e++) {
+                    output += "<td>" + wcagitem.heading + "</td>"
+                    output += "<td> " + wcagitem.issue + "</td>";
 
 
-                    output += "<tr>";
+                    // var test = wcagitem[i].values[e].element.node;
+                    // var start = "<xmp>";
+                    // var end = "</xmp>";
+                    // var whole = start + test + end;
 
 
-
-
-                    output += "<td>" + expensesByName[i].values[e].heading + "</td>"
-                    output += "<td> " + expensesByName[i].values[e].NODENUMBER + "</td>";
-
-
-                    var test = expensesByName[i].values[e].element.node;
-                    var start = "<xmp>";
-                    var end = "</xmp>";
-                    var whole = start + test + end;
-
-
-                    output += "<td>" + whole + "</td>"
+                    // output += "<td>" + whole + "</td>"
 
 
                     //output+="<td>" + expensesByName[i].values[e].element.node + "</td>" 
 
                     output += "</tr>";
+            
+            
 
-
-
-
-
-                }
+            
+            
+            
             }
+        }
+    } 
+
+
+
+
+
+            
+
+  
 
             output += "</table>";
 
@@ -117,7 +116,7 @@
 
 
 
-        })
+         })
 
 
 
