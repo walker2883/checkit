@@ -24,7 +24,6 @@ for x in "${pages[@]}";
 do resultarray+=("\"$sitepathurl/node/${x}\",");
 done
 sed "s|$OLDpageholder|${resultarray[*]}|g" $rootpath/checkit/TemplatesTest/access.js >> ./checkthesefiles.js;
-
 node checkthesefiles.js;
 
 
@@ -37,24 +36,15 @@ nodenum=${X%.*};
 sed -i "s|\[|\"$sitepathurl\/node\/$nodenum\"\:\[|" ./reports/${X};
 sed -i -e "s|}\]|}\]},|g" ./reports/${X};
 sed -i "1s|^|{|g" ./reports/${X};
-
 echo "${X}";
-
-cat "./reports/${X}" >> merging.json;
-
 done
 
 
-
-#http://checkit-walker2883.c9users.io
+#sample url - http://checkit-walker2883.c9users.io
 
 echo "" > accessibility_report.json;
-
-
-
 for X in $(ls ./reports/); do 
-	
-	cat "./reports/${X}" >> accessibility_report.json;
+cat "./reports/${X}" >> accessibility_report.json;
 done
 
 #validate json by adding additional characters
@@ -62,14 +52,3 @@ sed -i "1s|^|\[|g" ./accessibility_report.json;
 sed -i 's|$|ENDOTEXT|g' ./accessibility_report.json;
 sed -i 's|,ENDOTEXT|\]|g' ./accessibility_report.json;
 sed -i 's|\[ENDOTEXT|\[|g' ./accessibility_report.json;
-
-
-
-
-
-
-
-
-
-
-

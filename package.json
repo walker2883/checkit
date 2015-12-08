@@ -9,6 +9,7 @@
   "author": "walker,andrew",
   "license": "ISC",
   "devDependencies": {
+     "access-sniff": "^1.1.2",
     "bootstrap-table": "^1.8.1",
     "data-merge": "^1.0.2",
     "grunt-pa11y": "^0.1.3",
