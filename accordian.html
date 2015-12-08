@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC"-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="content-type" content="application/json; charset=utf-8" />
+    <title>WCAG CHECK IT</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.css">
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+
+<body>
+    <style>
+
+body{padding:10px;}
+    img{margin:auto; display: block;}
+    </style>
+    <script type="text/javascript">
+    $(document).ready(function() {
+
+      
+
+
+        var jqxhr = $.getJSON("./accessibility/accessibility_report.json", function(data) {
+
+
+// console.log(data[0].nodenumber2[0].issue);
+
+var output;
+
+  output = "<img src='./images/checkit.gif' />";
+output += "<div class='panel-group' id='accordion' role='tablist' aria-multiselectable='true'>";
+
+
+                // output += "<tr>";
+                // output += "<td>Type </td>";
+                // output += "<td>Node ID </td>"
+                // output += "<td>HTML effected</td>"
+                // output += "</tr>";
+
+
+ for (p in data) {
+        var test = data[p];
+        console.log(test)
+
+        for (k in test){ 
+           console.log(k)
+           
+         //output += "<tr class='warning'><td colspan='4'>" + k + "<a class='btn btn-success gtp' href='" + k + "'>go to page</a></td></tr>"  
+           
+        output += "<div class='panel panel-default'><div class='panel-heading' role='tab' id='headingOne'><h4 class='panel-title'><a role='button' data-toggle='collapse' data-parent='#accordion' href='#collapseOne' aria-expanded='true' aria-controls='collapseOne'>" + k + "</a></h4></div>"   
+           
+        
+                           output += "<div id='collapseOne' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='headingOne'><div class='panel-body'><table class='table table-bordered table-hover table-condensed'>";
+   
+           
+            for(b=0; b < test[k].length; b++){
+                
+                
+            console.log(test[k][b].issue)
+            
+            var wcagitem = test[k][b];
+            
+
+
+                    output += "<tr>"
+                    output += "<td>" + wcagitem.heading + "</td>"
+                    output += "<td class=description>" + wcagitem.description + "</td>"
+                    output += "<td> " + wcagitem.issue + "</td>";
+                                        var markup = wcagitem.element.node;
+                    var start = "<xmp>";
+                    var end = "</xmp>";
+                     var whole = start + markup + end;
+                    
+                     output += "<td>" + whole + "</td>";
+                    output += "</tr>"
+               
+
+                    // console.log(wcagitem.element.node)
+
+                    // var markup = wcagitem.element.node;
+                    // var start = "<xmp>";
+                    // var end = "</xmp>";
+                    //  var whole = start + markup + end;
+                    
+                    //  output += "<td>" + whole + "</td>";
+
+
+
+                    
+            
+            
+
+            
+            
+            
+            }
+            output += "</table></div></div></div>";
+        }
+    } 
+
+
+
+
+
+            
+
+  
+
+            output += "</div>";
+
+
+
+
+
+            document.getElementById('test').innerHTML = output;
+
+
+
+
+
+         })
+
+
+
+    });
+    </script>
+
+
+
+    <div class="t" id="test">
+        
+
+
+    </div>
+    <style>
+  
+    xmp{white-space: inherit;margin: 0px;}
+    
+    .table{
+
+  width:960px;
+  word-wrap: break-word;
+
+}
+
+.gtp{float:right}
+
+
+    </style>
+
+
+</body>
+
+</html>
