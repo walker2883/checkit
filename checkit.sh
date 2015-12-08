@@ -34,7 +34,7 @@ node checkthesefiles.js;
 
 for X in $(ls ./reports/); do 
 nodenum=${X%.*};
-sed -i "s|\[|\"$sitepathurl\/$nodenum\"\:\[|" ./reports/${X};
+sed -i "s|\[|\"$sitepathurl\/node\/$nodenum\"\:\[|" ./reports/${X};
 sed -i -e "s|}\]|}\]},|g" ./reports/${X};
 sed -i "1s|^|{|g" ./reports/${X};
 

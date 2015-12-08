@@ -1,12 +1,12 @@
 {
-  "name": "wcag-testing",
+  "name": "checkit",
   "version": "1.0.0",
   "description": "tests local drupal sites",
   "main": "Gruntfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "walker,andrew",
   "license": "ISC",
   "devDependencies": {
     "bootstrap-table": "^1.8.1",
@@ -21,5 +21,18 @@
     "grunt-accessibility": "^3.5.1",
     "jsonfile": "^2.2.2",
     "react-json-table": "0.0.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/walker2883/checkit.git"
+  },
+  "keywords": [
+    "drupal",
+    "wcag",
+    "testing"
+  ],
+  "bugs": {
+    "url": "https://github.com/walker2883/checkit/issues"
+  },
+  "homepage": "https://github.com/walker2883/checkit#readme"
 }
