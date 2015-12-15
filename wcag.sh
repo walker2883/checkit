@@ -44,13 +44,14 @@ function GENERATE_REPORT () {
 		X=${X/.json/};
 		# echo "${X}";
 		nodenum=${X%.*};
-		sed -Ei "" 's|\[\{|\'\"node_$nodenum\"': \[\{|' "./reports/${X}.json";
+		sed -Ei "" 's|\[\{|\{'\"node_$nodenum\"': \[\{|' "./reports/${X}.json";
+		echo "}" >> "./reports/${X}.json";
 		data=$(cat "./reports/${X}.json");
-		echo "${data}," > "./reports/${X}.json";
+		# echo "${data}," > "./reports/${X}.json";
 		js-beautify -rqf "./reports/${X}.json";
 	done
 	for X in "${pages[@]}"; do
-		cat "${BASEPATH}/reports/${X}.json" >> "${BASEPATH}/accessibility_report.json";
+		jq -s add "${BASEPATH}/reports/${X}.json" "${BASEPATH}/accessibility_report.json" >> "${BASEPATH}/accessibility_report.json";
 	done
 	# sed -Ei "" 's|.$|}|' "${BASEPATH}/accessibility_report.json";
 	# sed -Ei "" '1s|^|\{\n|' "${BASEPATH}/accessibility_report.json";
@@ -63,10 +64,10 @@ function GENERATE_REPORT () {
 
 function CLEAN () {
 	# REMOVE FILES
-	rm -f reports/*;
+	# rm -f reports/*;
 	rm -f drupalpages;
 	rm checkthesefiles.*;
-	rm -rf ./reports/;
+	# rm -rf ./reports/;
 }
 
 if [[ -n "${1}" ]] && [[ -n "${2}" ]]; then
