@@ -21,8 +21,6 @@ function GETVAR () {
 }
 
 function GENERATE_REPORT () {
-	rm -f "${OUTPUT}";
-	rm -f reports/*;
 	touch "drupalpages";
 	mkdir -p "${BASEPATH}/reports";
 	if [[ ! "${NAME}" == "" ]]; then
@@ -51,7 +49,6 @@ function GENERATE_REPORT () {
 		echo "}" >> "./reports/${X}.json";
 		js-beautify -rqf "./reports/${X}.json";
 	done
-	rm -f "${OUTPUT}";
 	for X in "${pages[@]}"; do
 		if [[ ! -a "${OUTPUT}" ]]; then
 			cp "./reports/${X}.json" "${OUTPUT}";
@@ -72,10 +69,11 @@ function GENERATE_REPORT () {
 
 function CLEAN () {
 	# REMOVE FILES
-	# rm -f reports/*;
+	rm -f "${OUTPUT}";
+	rm -f reports/*;
+	rm -rf ./reports/;
 	rm -f drupalpages;
 	rm checkthesefiles.*;
-	# rm -rf ./reports/;
 }
 
 if [[ -n "${1}" ]] && [[ -n "${2}" ]]; then
