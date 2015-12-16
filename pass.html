@@ -62,7 +62,6 @@
         var description;
         var element;
         var node;
-        var sss;
         for (item in data) {
           dataNames[dataQuantity] = item;
           dataQuantity++;
@@ -70,29 +69,27 @@
         dataOut += "<img src='./images/checkit.gif' />";
         dataOut += "<table class='table table-bordered table-hover table-condensed'>";
         for (nid in dataNames) {
+          dataQuantityIssues = data[dataNames[nid]].length;
           dataNid = dataNames[nid].replace("node_", "");
           dataIssues[nid] += dataNames[0][0].issue;
           // dataOut += dataNames[nid].[0];
-          dataOut += "<tr class='warning'><td colspan='4'>" + dataNid + "<a class='btn btn-success gtp' href='/node/" + dataNid + "'>go to page</a></td></tr>";
+          dataOut += "<tr class='active'><td colspan='2'>Node #" + dataNid + "<br />" + dataQuantityIssues + " issues were found</td><td colspan='2'><a class='disabled btn btn-success gtp' href='/node/" + dataNid + "'>go to page</a></td></tr>";
           // for () {
-            // for (issue in dataIssues) {
-            dataIndex = 0;
-            dataItem = data[dataNames[nid]][dataIndex];
-            // console.log(sss);
-            dataItem.rowClass = "";
-            dataIssues[dataIndex] = dataItem.issue;
-            dataHeadings[dataIndex] = dataItem.heading;
-            dataDescriptions[dataIndex] = dataItem.description;
-            dataNodes[dataIndex] = dataItem.element.node;
-            if (dataHeadings[dataIndex] == "ERROR") { dataItem.rowClass = "danger"; }
-            dataOut += "<tr class='" + dataItem.rowClass + "'>";
-            dataOut += "<td class='heading " + dataHeadings[dataIndex] + "'>" + dataHeadings[dataIndex] + "</td>";
-            dataOut += "<td class='issue'>" + dataIssues[dataIndex] + "</td>";
-            dataOut += "<td class='description'>" + dataDescriptions[dataIndex] + "</td>";
-            dataOut += "<td class='nodes'><code>" + dataNodes[dataIndex] + "</code></td>";
-            dataOut += "</tr>";
-            dataIndex++;
-            // }
+            for (dataIndex = 0; dataIndex < dataQuantityIssues; dataIndex++) {
+              dataItem = data[dataNames[nid]][dataIndex];
+              dataItem.rowClass = "";
+              dataIssues[dataIndex] = dataItem.issue;
+              dataHeadings[dataIndex] = dataItem.heading;
+              dataDescriptions[dataIndex] = dataItem.description;
+              dataNodes[dataIndex] = dataItem.element.node;
+              if (dataHeadings[dataIndex] == "ERROR") { dataItem.rowClass = "danger"; }
+              dataOut += "<tr class='" + dataItem.rowClass + "'>";
+              dataOut += "<td class='heading " + dataHeadings[dataIndex] + "'>" + dataHeadings[dataIndex] + "</td>";
+              dataOut += "<td class='issue'>" + dataIssues[dataIndex] + "</td>";
+              dataOut += "<td class='description'>" + dataDescriptions[dataIndex] + "</td>";
+              dataOut += "<td class='nodes'><code>" + dataNodes[dataIndex] + "</code></td>";
+              dataOut += "</tr>";
+            }
           // }
         }
         dataOut += "</table>";
