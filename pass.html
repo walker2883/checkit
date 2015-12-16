@@ -8,10 +8,10 @@
   <title>WCAG CHECK IT</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
-  <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.css">
   <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </head>
 <body>
   <style>
@@ -23,7 +23,7 @@
       display: block;
     }
   </style>
-  <div id="test">
+  <div id="test" class="container">
   </div>
   <style>
     xmp {
@@ -31,7 +31,7 @@
       margin: 0px;
     }
     .table {
-      width: 960px;
+      width: 100%;
       word-wrap: break-word;
     }
     .gtp {
@@ -49,14 +49,14 @@
     $(document).ready(function() {
       var jqXHR = $.get("accessibility_report.json", {}, function(data) {
         var output;
-        console.log(data);
+        // console.log(data);
         output = "<img src='./images/checkit.gif' />";
         output += "<table class='table table-bordered table-hover table-condensed'>";
         for (p in data) {
           var test = data[p];
           for (k in test) {
             output += "<tr class='warning'><td colspan='4'>" + k + "<a class='btn btn-success gtp' href='" + k + "'>go to page</a></td></tr>";
-            for (b = 0; b < test[k].length; b++) {
+            for (b in test[k].length) {
               var wcagitem = test[k][b];
               output += "<tr>";
               output += "<td>" + wcagitem.heading + "</td>";
@@ -72,7 +72,7 @@
           }
         }
         output += "</table>";
-        document.getElementById('test').append = output;
+        document.getElementById('test').innerHTML = output;
         console.log(data);
       }).fail(function( jqxhr, textStatus, error ) {
                     var err = textStatus + ', ' + error;
