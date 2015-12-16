@@ -90,7 +90,7 @@
             dataOut += "<td class='heading " + dataHeadings[dataIndex] + "'>" + dataHeadings[dataIndex] + "</td>";
             dataOut += "<td class='issue'>" + dataIssues[dataIndex] + "</td>";
             dataOut += "<td class='description'>" + dataDescriptions[dataIndex] + "</td>";
-            dataOut += "<td class='nodes'><code>" + dataNodes[dataIndex] + "</code></td>";
+            dataOut += "<td class='nodes'><code>" + dataNodes[dataIndex].replace(/(<([^>]+)>)/ig,"") + "</code></td>";
             dataOut += "</tr>";
           }
         }
