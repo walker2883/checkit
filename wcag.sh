@@ -18,6 +18,10 @@ function GETVAR () {
 	BASEPATH="${PWD}";
 	REPORTNAME="accessibility_report";
 	OUTPUT="${BASEPATH}/${REPORTNAME}.json";
+
+	if [[ -n $(which apt-get) ]]; then sudo apt-get install jq;
+	elif [[ -n $(which brew) ]]; then brew install jq;
+	else echo "Please install brew or jq to get started..."; exit 0; fi
 }
 
 function GENERATE_REPORT () {
