@@ -63,9 +63,10 @@ function GENERATE_REPORT () {
 	sed -Ei "" 's|}]|}],|g' "${OUTPUT}";
 	sed -Ei "" 's|}],,|}],|g' "${OUTPUT}";
 	sed -Ei "" 's|} {||g' "${OUTPUT}";
-	# cat "${OUTPUT}" | awk '{buf[NR-1]=$0;}END{ for ( i=0; i < (NR-2); i++){ print buf[i];} }' > "${OUTPUT}";
-	# cat ./accessibility_report_2.json > "${OUTPUT}";
-	# echo "}]}" >> "${OUTPUT}";
+	js-beautify -rqf "${OUTPUT}";
+	sed -Ei "" '$ d' "${OUTPUT}";
+	sed -Ei "" '$ d' "${OUTPUT}";
+	echo "}]}" >> "${OUTPUT}";
 	js-beautify -rqf "${OUTPUT}";
 }
 
