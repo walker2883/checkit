@@ -72,25 +72,22 @@
           dataQuantityIssues = data[dataNames[nid]].length;
           dataNid = dataNames[nid].replace("node_", "");
           dataIssues[nid] += dataNames[0][0].issue;
-          // dataOut += dataNames[nid].[0];
           dataOut += "<tr class='active'><td colspan='2'>Node #" + dataNid + "<br />" + dataQuantityIssues + " issues were found</td><td colspan='2'><a class='disabled btn btn-success gtp' href='/node/" + dataNid + "'>go to page</a></td></tr>";
-          // for () {
-            for (dataIndex = 0; dataIndex < dataQuantityIssues; dataIndex++) {
-              dataItem = data[dataNames[nid]][dataIndex];
-              dataItem.rowClass = "";
-              dataIssues[dataIndex] = dataItem.issue;
-              dataHeadings[dataIndex] = dataItem.heading;
-              dataDescriptions[dataIndex] = dataItem.description;
-              dataNodes[dataIndex] = dataItem.element.node;
-              if (dataHeadings[dataIndex] == "ERROR") { dataItem.rowClass = "danger"; }
-              dataOut += "<tr class='" + dataItem.rowClass + "'>";
-              dataOut += "<td class='heading " + dataHeadings[dataIndex] + "'>" + dataHeadings[dataIndex] + "</td>";
-              dataOut += "<td class='issue'>" + dataIssues[dataIndex] + "</td>";
-              dataOut += "<td class='description'>" + dataDescriptions[dataIndex] + "</td>";
-              dataOut += "<td class='nodes'><code>" + dataNodes[dataIndex] + "</code></td>";
-              dataOut += "</tr>";
-            }
-          // }
+          for (dataIndex = 0; dataIndex < dataQuantityIssues; dataIndex++) {
+            dataItem = data[dataNames[nid]][dataIndex];
+            dataItem.rowClass = "";
+            dataIssues[dataIndex] = dataItem.issue;
+            dataHeadings[dataIndex] = dataItem.heading;
+            dataDescriptions[dataIndex] = dataItem.description;
+            dataNodes[dataIndex] = dataItem.element.node;
+            if (dataHeadings[dataIndex] == "ERROR") { dataItem.rowClass = "danger"; }
+            dataOut += "<tr class='" + dataItem.rowClass + "'>";
+            dataOut += "<td class='heading " + dataHeadings[dataIndex] + "'>" + dataHeadings[dataIndex] + "</td>";
+            dataOut += "<td class='issue'>" + dataIssues[dataIndex] + "</td>";
+            dataOut += "<td class='description'>" + dataDescriptions[dataIndex] + "</td>";
+            dataOut += "<td class='nodes'><code>" + dataNodes[dataIndex] + "</code></td>";
+            dataOut += "</tr>";
+          }
         }
         dataOut += "</table>";
         document.getElementById('test').innerHTML = dataOut;
@@ -98,54 +95,6 @@
           var err = textStatus + ', ' + error;
           console.log( "Request Failed: " + err);
         });
-
-        // heading
-        // description
-        // issue
-        // element.node
-        // dataOut += data;
-        // dataOut += dataNames[1];
-        // dataOut += "<br />";
-        // dataOut += dataQuantity;
-        // dataOut += data.length;
-        //   dataIssues[dataQuantity] = item[dataQuantity].issue;
-        //   dataNodes[dataQuantity] = item;
-        //   dataHeadings[dataQuantity] = item;
-        //   dataDescriptions[dataQuantity] = item;
-
-
-
-
-        // var output;
-        // output = "<img src='./images/checkit.gif' />";
-        // output += "<table class='table table-bordered table-hover table-condensed'>";
-        // for (p in data) {
-        //   var test = data[p];
-        //   for (k in test) {
-        //     output += "<tr class='warning'><td colspan='4'>" + k + "<a class='btn btn-success gtp' href='" + k + "'>go to page</a></td></tr>";
-        //     for (b in test[k].length) {
-        //       var wcagitem = test[k][b];
-        //       output += (wcagitem);
-        //       output += "<tr>";
-        //       output += "<td>" + wcagitem.heading + "</td>";
-        //       output += "<td class=description>" + wcagitem.description + "</td>";
-        //       output += "<td> " + wcagitem.issue + "</td>";
-        //       var markup = wcagitem.element.node;
-        //       var start = "<xmp>";
-        //       var end = "</xmp>";
-        //       var whole = start + markup + end;
-        //       output += "<td>" + whole + "</td>";
-        //       output += "</tr>";
-        //     }
-        //   }
-        // }
-        // output += "</table>";
-        // document.getElementById('test').innerHTML = output;
-        // console.log(data.node_1[0].heading);
-        // }).fail(function( jqxhr, textStatus, error ) {
-        //   var err = textStatus + ', ' + error;
-        //   console.log( "Request Failed: " + err);
-        // });
     });
   </script>
 </body>
