@@ -21,7 +21,7 @@ function GETVAR () {
 
 	if [[ -n $(which apt-get) ]] && [[ -z $(which jq) ]]; then sudo apt-get install jq;
 	elif [[ -n $(which brew) ]] && [[ -z $(which jq) ]]; then brew install jq;
-	elif [[ -n $(which jq) ]]; then break;
+	elif [[ -n $(which jq) ]]; then echo "";
 	else echo "Please install brew or jq to get started..."; exit 0; fi
 }
 
@@ -47,7 +47,6 @@ function GENERATE_REPORT () {
 	for X in $(find ./reports/* | grep json); do
 		X=${X/.\/reports\//};
 		X=${X/.json/};
-		# echo "${X}";
 		nodenum=${X%.*};
 		sed -Ei "" 's|\[\{|\{'\"node_$nodenum\"': \[\{|' "./reports/${X}.json";
 		echo "}" >> "./reports/${X}.json";
