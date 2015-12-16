@@ -47,7 +47,7 @@
     });
     $(document).ready(function() {
       var jqXHR = $.get("accessibility_report.json", {}, function(data) {
-        var dataOut;
+        var dataOut = "";
         var dataImage;
         var dataSummary;
         var dataQuantity = 0;
@@ -95,8 +95,8 @@
           }
         }
         dataOut += "</table></row>";
-        dataImage += "<div class='row container'><img src='./images/checkit.gif' /></div>";
-        dataSummary += "<div class='row container'>";
+        dataImage = "<div class='row container'><img src='./images/checkit.gif' /></div>";
+        dataSummary = "<div class='row container'>";
         dataSummary += "<p class='alert alert-danger'>" + dataNidTotal + " nodes have accessibility issues.</p>";
         dataSummary += "<p class='alert alert-danger'>" + dataIssuesTotal + " issues in total have been identified.</p>";
         dataSummary += "</div>";
