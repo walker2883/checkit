@@ -23,7 +23,6 @@
       display: block;
     }
   </style>
-  <div id="tester" class="container"></div>
   <div id="test" class="container"></div>
   <style>
     xmp {
@@ -50,36 +49,54 @@
       var jqXHR = $.get("accessibility_report.json", {}, function(data) {
         var dataOut;
         var dataQuantity = 0;
+        var dataIndex = 0;
         var dataNames = [];
         var dataIssues = [];
         var dataHeadings = [];
         var dataDescriptions = [];
         var dataNodes = [];
+        var dataNid = [];
         var dataNids = [];
-        var issue = "";
+        var issue;
+        var heading;
+        var description;
+        var element;
+        var node;
+        var sss;
         for (item in data) {
           dataNames[dataQuantity] = item;
-          dataNids[dataQuantity] = dataNames[dataQuantity].replace("node_", "");
           dataQuantity++;
         }
         dataOut += "<img src='./images/checkit.gif' />";
         dataOut += "<table class='table table-bordered table-hover table-condensed'>";
-        for (nid in dataNids) {
-          // for (issue in dataIssues) {
-            dataOut += "<tr class='warning'><td colspan='4'>" + dataNids[nid] + "<a class='btn btn-success gtp' href='/node/" + dataNids[nid] + "'>go to page</a></td></tr>";
-            // for () {
-              dataOut += "<tr>";
-              dataOut += "<td></td>";
-              dataOut += "<td class=description></td>";
-              dataOut += "<td></td>";
-              dataOut += "<td></td>";
-              dataOut += "</tr>";
+        for (nid in dataNames) {
+          dataNid = dataNames[nid].replace("node_", "");
+          dataIssues[nid] += dataNames[0][0].issue;
+          // dataOut += dataNames[nid].[0];
+          dataOut += "<tr class='warning'><td colspan='4'>" + dataNid + "<a class='btn btn-success gtp' href='/node/" + dataNid + "'>go to page</a></td></tr>";
+          // for () {
+            // for (issue in dataIssues) {
+            dataIndex = 0;
+            dataItem = data[dataNames[nid]][dataIndex];
+            // console.log(sss);
+            dataItem.rowClass = "";
+            dataIssues[dataIndex] = dataItem.issue;
+            dataHeadings[dataIndex] = dataItem.heading;
+            dataDescriptions[dataIndex] = dataItem.description;
+            dataNodes[dataIndex] = dataItem.element.node;
+            if (dataHeadings[dataIndex] == "ERROR") { dataItem.rowClass = "danger"; }
+            dataOut += "<tr class='" + dataItem.rowClass + "'>";
+            dataOut += "<td class='heading " + dataHeadings[dataIndex] + "'>" + dataHeadings[dataIndex] + "</td>";
+            dataOut += "<td class='issue'>" + dataIssues[dataIndex] + "</td>";
+            dataOut += "<td class='description'>" + dataDescriptions[dataIndex] + "</td>";
+            dataOut += "<td class='nodes'><code>" + dataNodes[dataIndex] + "</code></td>";
+            dataOut += "</tr>";
+            dataIndex++;
             // }
           // }
         }
         dataOut += "</table>";
         document.getElementById('test').innerHTML = dataOut;
-        console.log(data);
         }).fail(function( jqxhr, textStatus, error ) {
           var err = textStatus + ', ' + error;
           console.log( "Request Failed: " + err);
@@ -126,6 +143,12 @@
         //   }
         // }
         // output += "</table>";
+        // document.getElementById('test').innerHTML = output;
+        // console.log(data.node_1[0].heading);
+        // }).fail(function( jqxhr, textStatus, error ) {
+        //   var err = textStatus + ', ' + error;
+        //   console.log( "Request Failed: " + err);
+        // });
     });
   </script>
 </body>
