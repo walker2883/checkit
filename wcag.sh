@@ -29,8 +29,7 @@ function GENERATE_REPORT () {
 		drush "sqlq" "SELECT nid FROM node  WHERE status=1" > "/${BASEPATH}/drupalpages";
 	fi
 	# Grab node ids and update access,js
-	# declare -a pages=($(cat drupalpages));
-	declare -a pages=("1" "3");
+	declare -a pages=($(cat drupalpages));
 	OLDpageholder="pagestested";
 	resultarray=();
 	# clear file
