@@ -35,6 +35,8 @@ function GENERATE_REPORT () {
 	fi
 	# Grab node ids and update access,js
 	declare -a pages=($(cat drupalpages));
+	declare -a pages=($(echo "$pages[@]" | sort ) );
+	# declare -a pages=("641" "646");
 	OLDpageholder="pagestested";
 	resultarray=();
 	# clear file
@@ -48,33 +50,47 @@ function GENERATE_REPORT () {
 		X=${X/.\/reports\//};
 		X=${X/.json/};
 		nodenum=${X%.*};
-		sed -Ei "" 's|\[\{|\{'\"node_$nodenum\"': \[\{|' "./reports/${X}.json";
+		if [[ "${USER}" == "vagrant" ]]; then
+			sed -Ei "s|\[\{|\{\"node_$nodenum\": \[\{\"website\":\"$URL\",|" "./reports/${X}.json";
+		else
+			sed -Ei "" "s|\[\{|\{\"node_$nodenum\": \[\{|" "./reports/${X}.json";
+		fi
 		echo "}" >> "./reports/${X}.json";
 		js-beautify -rqf "./reports/${X}.json";
 	done
+	echo "{" > "${OUTPUT}";
 	for X in "${pages[@]}"; do
-		if [[ ! -a "${OUTPUT}" ]]; then
-			cp "./reports/${X}.json" "${OUTPUT}";
+		if [[ "${USER}" == "vagrant" ]]; then
+			sed -Ei "1 d" "./reports/${X}.json";
+			sed -Ei "$ d" "./reports/${X}.json";
+			sed -Ei "$ d" "./reports/${X}.json";
 		else
-			jq -s add "${BASEPATH}/reports/${X}.json" "${OUTPUT}" >> "${OUTPUT}";
+			sed -Ei "" "1 d" "./reports/${X}.json";
+			sed -Ei "" "$ d" "./reports/${X}.json";
+			sed -Ei "" "$ d" "./reports/${X}.json";
 		fi
+		echo "}]," >> "./reports/${X}.json";
+		cat "./reports/${X}.json" >> "${OUTPUT}";
 	done
-	js-beautify -rqf "${OUTPUT}";
-	sed -Ei "" 's|}]|}],|g' "${OUTPUT}";
-	sed -Ei "" 's|}],,|}],|g' "${OUTPUT}";
-	sed -Ei "" 's|} {||g' "${OUTPUT}";
-	js-beautify -rqf "${OUTPUT}";
-	sed -Ei "" '$ d' "${OUTPUT}";
-	sed -Ei "" '$ d' "${OUTPUT}";
+	echo "}" >> "${OUTPUT}";
+	if [[ "${USER}" == "vagrant" ]]; then
+		sed -Ei "s|}]|}],|g" "${OUTPUT}";
+		sed -Ei "s|}],,|}],|g" "${OUTPUT}";
+		sed -Ei "$ d" "${OUTPUT}";
+		sed -Ei "$ d" "${OUTPUT}";
+	else
+		sed -Ei "" "s|}]|}],|g" "${OUTPUT}";
+		sed -Ei "" "s|}],,|}],|g" "${OUTPUT}";
+		sed -Ei "" "$ d" "${OUTPUT}";
+		sed -Ei "" "$ d" "${OUTPUT}";
+	fi
 	echo "}]}" >> "${OUTPUT}";
-	js-beautify -rqf "${OUTPUT}";
 }
 
 function CLEAN () {
 	# REMOVE FILES
-	rm -f "${OUTPUT}";
-	rm -f reports/*;
-	rm -rf ./reports/;
+	# rm -f reports/*;
+	# rm -rf ./reports/;
 	rm -f drupalpages;
 	rm checkthesefiles.*;
 }
