@@ -33,7 +33,6 @@ function GENERATE_REPORT () {
 	resultarray=();
 	# clear file
 	echo "" > ./checkthesefiles.js;
-	echo "" > accessibility_report.json;
 	for x in "${pages[@]}"; do
 		resultarray+=("\"http://${URL}/node/${x}\",");
 	done
@@ -50,13 +49,20 @@ function GENERATE_REPORT () {
 		# echo "${data}," > "./reports/${X}.json";
 		js-beautify -rqf "./reports/${X}.json";
 	done
+	rm -f accessibility_report.*;
 	for X in "${pages[@]}"; do
-		jq -s add "${BASEPATH}/reports/${X}.json" "${BASEPATH}/accessibility_report.json" >> "${BASEPATH}/accessibility_report.json";
+		if [[ ! -a "${BASEPATH}/accessibility_report.json" ]]; then
+			cp "./reports/${X}.json" "${BASEPATH}/accessibility_report.json";
+		else
+			jq -s add "${BASEPATH}/reports/${X}.json" "${BASEPATH}/accessibility_report.json" >> "${BASEPATH}/accessibility_report.json";
+		fi
 	done
 	# sed -Ei "" 's|.$|}|' "${BASEPATH}/accessibility_report.json";
 	# sed -Ei "" '1s|^|\{\n|' "${BASEPATH}/accessibility_report.json";
+	sed -Ei "" 's|\}\ \{|\}\,\ \{|g' "${BASEPATH}/accessibility_report.json";
 	sed -Ei "" 's|\}\]\[\{|\}\,\{|g' "${BASEPATH}/accessibility_report.json";
-	sed -Ei "" 's|\}\ \{|\}\,\{|g' "${BASEPATH}/accessibility_report.json";
+	sed -Ei "" 's|} {||g' "${BASEPATH}/accessibility_report.json";
+	sed -Ei "" 's|}]|}],|g' "${BASEPATH}/accessibility_report.json";
 	data=$(cat "${BASEPATH}/accessibility_report.json");
 	echo "{${data}}" > "${BASEPATH}/accessibility_report.json";
 	js-beautify -rqf "${BASEPATH}/accessibility_report.json";
