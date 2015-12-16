@@ -48,15 +48,19 @@
     $(document).ready(function() {
       var jqXHR = $.get("accessibility_report.json", {}, function(data) {
         var dataOut;
+        var dataImage;
+        var dataSummary;
         var dataQuantity = 0;
         var dataIndex = 0;
         var dataNames = [];
         var dataIssues = [];
+        var dataIssuesTotal = 0;
         var dataHeadings = [];
         var dataDescriptions = [];
         var dataNodes = [];
         var dataNid = [];
         var dataNids = [];
+        var dataNidTotal = 0;
         var issue;
         var heading;
         var description;
@@ -66,10 +70,11 @@
           dataNames[dataQuantity] = item;
           dataQuantity++;
         }
-        dataOut += "<img src='./images/checkit.gif' />";
-        dataOut += "<table class='table table-bordered table-hover table-condensed'>";
+        dataOut += "<div cols='4' class='row container'><table class='table table-bordered table-hover table-condensed'>";
         for (nid in dataNames) {
           dataQuantityIssues = data[dataNames[nid]].length;
+          dataIssuesTotal += dataQuantityIssues;
+          dataNidTotal++;
           dataNid = dataNames[nid].replace("node_", "");
           dataIssues[nid] += dataNames[0][0].issue;
           dataOut += "<tr class='active'><td colspan='2'>Node #" + dataNid + "<br />" + dataQuantityIssues + " issues were found</td><td colspan='2'><a class='disabled btn btn-success gtp' href='/node/" + dataNid + "'>go to page</a></td></tr>";
@@ -89,8 +94,13 @@
             dataOut += "</tr>";
           }
         }
-        dataOut += "</table>";
-        document.getElementById('test').innerHTML = dataOut;
+        dataOut += "</table></row>";
+        dataImage += "<div class='row container'><img src='./images/checkit.gif' /></div>";
+        dataSummary += "<div class='row container'>";
+        dataSummary += "<p class='alert alert-danger'>" + dataNidTotal + " nodes have accessibility issues.</p>";
+        dataSummary += "<p class='alert alert-danger'>" + dataIssuesTotal + " issues in total have been identified.</p>";
+        dataSummary += "</div>";
+        document.getElementById('test').innerHTML =  dataImage + dataSummary + dataOut;
         }).fail(function( jqxhr, textStatus, error ) {
           var err = textStatus + ', ' + error;
           console.log( "Request Failed: " + err);
