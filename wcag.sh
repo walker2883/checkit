@@ -21,6 +21,7 @@ function GETVAR () {
 
 	if [[ -n $(which apt-get) ]] && [[ -z $(which jq) ]]; then sudo apt-get install jq;
 	elif [[ -n $(which brew) ]] && [[ -z $(which jq) ]]; then brew install jq;
+	elif [[ -n $(which jq) ]]; then break;
 	else echo "Please install brew or jq to get started..."; exit 0; fi
 }
 
