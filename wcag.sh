@@ -16,10 +16,13 @@ function GETVAR () {
 	URL=${URL/ /};
 	URL=$(echo $URL | cut -d " " -f1);
 	BASEPATH="${PWD}";
+	REPORTNAME="accessibility_report";
+	OUTPUT="${BASEPATH}/${REPORTNAME}.json";
 }
 
 function GENERATE_REPORT () {
-	rm -f accessibility_report.*;
+	rm -f "${OUTPUT}";
+	rm -f reports/*;
 	touch "drupalpages";
 	mkdir -p "${BASEPATH}/reports";
 	if [[ ! "${NAME}" == "" ]]; then
@@ -28,7 +31,8 @@ function GENERATE_REPORT () {
 		drush "sqlq" "SELECT nid FROM node  WHERE status=1" > "/${BASEPATH}/drupalpages";
 	fi
 	# Grab node ids and update access,js
-	declare -a pages=($(cat drupalpages));
+	# declare -a pages=($(cat drupalpages));
+	declare -a pages=("1" "3");
 	OLDpageholder="pagestested";
 	resultarray=();
 	# clear file
@@ -45,27 +49,24 @@ function GENERATE_REPORT () {
 		nodenum=${X%.*};
 		sed -Ei "" 's|\[\{|\{'\"node_$nodenum\"': \[\{|' "./reports/${X}.json";
 		echo "}" >> "./reports/${X}.json";
-		data=$(cat "./reports/${X}.json");
-		# echo "${data}," > "./reports/${X}.json";
 		js-beautify -rqf "./reports/${X}.json";
 	done
-	rm -f accessibility_report.*;
+	rm -f "${OUTPUT}";
 	for X in "${pages[@]}"; do
-		if [[ ! -a "${BASEPATH}/accessibility_report.json" ]]; then
-			cp "./reports/${X}.json" "${BASEPATH}/accessibility_report.json";
+		if [[ ! -a "${OUTPUT}" ]]; then
+			cp "./reports/${X}.json" "${OUTPUT}";
 		else
-			jq -s add "${BASEPATH}/reports/${X}.json" "${BASEPATH}/accessibility_report.json" >> "${BASEPATH}/accessibility_report.json";
+			jq -s add "${BASEPATH}/reports/${X}.json" "${OUTPUT}" >> "${OUTPUT}";
 		fi
 	done
-	# sed -Ei "" 's|.$|}|' "${BASEPATH}/accessibility_report.json";
-	# sed -Ei "" '1s|^|\{\n|' "${BASEPATH}/accessibility_report.json";
-	sed -Ei "" 's|\}\ \{|\}\,\ \{|g' "${BASEPATH}/accessibility_report.json";
-	sed -Ei "" 's|\}\]\[\{|\}\,\{|g' "${BASEPATH}/accessibility_report.json";
-	sed -Ei "" 's|} {||g' "${BASEPATH}/accessibility_report.json";
-	sed -Ei "" 's|}]|}],|g' "${BASEPATH}/accessibility_report.json";
-	data=$(cat "${BASEPATH}/accessibility_report.json");
-	echo "{${data}}" > "${BASEPATH}/accessibility_report.json";
-	js-beautify -rqf "${BASEPATH}/accessibility_report.json";
+	js-beautify -rqf "${OUTPUT}";
+	sed -Ei "" 's|}]|}],|g' "${OUTPUT}";
+	sed -Ei "" 's|}],,|}],|g' "${OUTPUT}";
+	sed -Ei "" 's|} {||g' "${OUTPUT}";
+	# cat "${OUTPUT}" | awk '{buf[NR-1]=$0;}END{ for ( i=0; i < (NR-2); i++){ print buf[i];} }' > "${OUTPUT}";
+	# cat ./accessibility_report_2.json > "${OUTPUT}";
+	# echo "}]}" >> "${OUTPUT}";
+	js-beautify -rqf "${OUTPUT}";
 }
 
 function CLEAN () {
