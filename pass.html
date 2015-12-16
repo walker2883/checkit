@@ -61,6 +61,7 @@
         var dataNid = [];
         var dataNids = [];
         var dataNidTotal = 0;
+        var dataWebsite;
         var issue;
         var heading;
         var description;
@@ -77,7 +78,8 @@
           dataNidTotal++;
           dataNid = dataNames[nid].replace("node_", "");
           dataIssues[nid] += dataNames[0][0].issue;
-          dataOut += "<tr class='active'><td colspan='2'>Node #" + dataNid + "<br />" + dataQuantityIssues + " issues were found</td><td colspan='2'><a class='disabled btn btn-success gtp' href='/node/" + dataNid + "'>go to page</a></td></tr>";
+          // dataWebsite = dataNames[data[dataNames[nid]].length].website;
+          dataOut += "<tr class='active'><td colspan='2'>Node #" + dataNid + dataWebsite +  "<br />" + dataQuantityIssues + " issues were found</td><td colspan='2'><a class='disabled btn btn-success gtp' href='/node/" + dataNid + "'>go to page</a></td></tr>";
           for (dataIndex = 0; dataIndex < dataQuantityIssues; dataIndex++) {
             dataItem = data[dataNames[nid]][dataIndex];
             dataItem.rowClass = "";
