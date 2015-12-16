@@ -23,8 +23,8 @@
       display: block;
     }
   </style>
-  <div id="test" class="container">
-  </div>
+  <div id="tester" class="container"></div>
+  <div id="test" class="container"></div>
   <style>
     xmp {
       white-space: inherit;
@@ -48,36 +48,84 @@
     });
     $(document).ready(function() {
       var jqXHR = $.get("accessibility_report.json", {}, function(data) {
-        var output;
-        // console.log(data);
-        output = "<img src='./images/checkit.gif' />";
-        output += "<table class='table table-bordered table-hover table-condensed'>";
-        for (p in data) {
-          var test = data[p];
-          for (k in test) {
-            output += "<tr class='warning'><td colspan='4'>" + k + "<a class='btn btn-success gtp' href='" + k + "'>go to page</a></td></tr>";
-            for (b in test[k].length) {
-              var wcagitem = test[k][b];
-              output += "<tr>";
-              output += "<td>" + wcagitem.heading + "</td>";
-              output += "<td class=description>" + wcagitem.description + "</td>";
-              output += "<td> " + wcagitem.issue + "</td>";
-              var markup = wcagitem.element.node;
-              var start = "<xmp>";
-              var end = "</xmp>";
-              var whole = start + markup + end;
-              output += "<td>" + whole + "</td>";
-              output += "</tr>";
-            }
-          }
+        var dataOut;
+        var dataQuantity = 0;
+        var dataNames = [];
+        var dataIssues = [];
+        var dataHeadings = [];
+        var dataDescriptions = [];
+        var dataNodes = [];
+        var dataNids = [];
+        var issue = "";
+        for (item in data) {
+          dataNames[dataQuantity] = item;
+          dataNids[dataQuantity] = dataNames[dataQuantity].replace("node_", "");
+          dataQuantity++;
         }
-        output += "</table>";
-        document.getElementById('test').innerHTML = output;
+        dataOut += "<img src='./images/checkit.gif' />";
+        dataOut += "<table class='table table-bordered table-hover table-condensed'>";
+        for (nid in dataNids) {
+          // for (issue in dataIssues) {
+            dataOut += "<tr class='warning'><td colspan='4'>" + dataNids[nid] + "<a class='btn btn-success gtp' href='/node/" + dataNids[nid] + "'>go to page</a></td></tr>";
+            // for () {
+              dataOut += "<tr>";
+              dataOut += "<td></td>";
+              dataOut += "<td class=description></td>";
+              dataOut += "<td></td>";
+              dataOut += "<td></td>";
+              dataOut += "</tr>";
+            // }
+          // }
+        }
+        dataOut += "</table>";
+        document.getElementById('test').innerHTML = dataOut;
         console.log(data);
-      }).fail(function( jqxhr, textStatus, error ) {
-                    var err = textStatus + ', ' + error;
-                    console.log( "Request Failed: " + err);
-              });
+        }).fail(function( jqxhr, textStatus, error ) {
+          var err = textStatus + ', ' + error;
+          console.log( "Request Failed: " + err);
+        });
+
+        // heading
+        // description
+        // issue
+        // element.node
+        // dataOut += data;
+        // dataOut += dataNames[1];
+        // dataOut += "<br />";
+        // dataOut += dataQuantity;
+        // dataOut += data.length;
+        //   dataIssues[dataQuantity] = item[dataQuantity].issue;
+        //   dataNodes[dataQuantity] = item;
+        //   dataHeadings[dataQuantity] = item;
+        //   dataDescriptions[dataQuantity] = item;
+
+
+
+
+        // var output;
+        // output = "<img src='./images/checkit.gif' />";
+        // output += "<table class='table table-bordered table-hover table-condensed'>";
+        // for (p in data) {
+        //   var test = data[p];
+        //   for (k in test) {
+        //     output += "<tr class='warning'><td colspan='4'>" + k + "<a class='btn btn-success gtp' href='" + k + "'>go to page</a></td></tr>";
+        //     for (b in test[k].length) {
+        //       var wcagitem = test[k][b];
+        //       output += (wcagitem);
+        //       output += "<tr>";
+        //       output += "<td>" + wcagitem.heading + "</td>";
+        //       output += "<td class=description>" + wcagitem.description + "</td>";
+        //       output += "<td> " + wcagitem.issue + "</td>";
+        //       var markup = wcagitem.element.node;
+        //       var start = "<xmp>";
+        //       var end = "</xmp>";
+        //       var whole = start + markup + end;
+        //       output += "<td>" + whole + "</td>";
+        //       output += "</tr>";
+        //     }
+        //   }
+        // }
+        // output += "</table>";
     });
   </script>
 </body>
