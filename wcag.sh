@@ -18,30 +18,29 @@ function GETVAR () {
 	BASEPATH="${PWD}";
 	REPORTNAME="accessibility_report";
 	OUTPUT="${BASEPATH}/${REPORTNAME}.json";
-
-	if [[ -n $(which apt-get) ]] && [[ -z $(which jq) ]]; then sudo apt-get install jq;
-	elif [[ -n $(which brew) ]] && [[ -z $(which jq) ]]; then brew install jq;
-	elif [[ -n $(which jq) ]]; then echo "";
-	else echo "Please install brew or jq to get started..."; exit 0; fi
 }
 
 function GENERATE_REPORT () {
 	touch "drupalpages";
 	mkdir -p "${BASEPATH}/reports";
 	if [[ ! "${NAME}" == "" ]]; then
-		drush "${NAME}" "sqlq" "SELECT nid FROM node  WHERE status=1" > "/${BASEPATH}/drupalpages";
+		drush "${NAME}" "sqlq" "SELECT nid FROM node  WHERE status=1" > "${BASEPATH}/drupalpages";
 	else
-		drush "sqlq" "SELECT nid FROM node  WHERE status=1" > "/${BASEPATH}/drupalpages";
+		drush "sqlq" "SELECT nid FROM node  WHERE status=1" > "${BASEPATH}/drupalpages";
 	fi
 	# Grab node ids and update access,js
-	declare -a pages=($(cat drupalpages));
-	declare -a pages=($(echo "$pages[@]" | sort ) );
-	# declare -a pages=("641" "646");
+	declare -a PAGESRAW=($(cat drupalpages));
+	declare -a PAGES=();
+	for X in $(echo "${pagesraw[@]}" | sort --numeric-sort); do
+		PAGES+=("${X}");
+	done
+	unset PAGESRAW;
+	rm -f "${BASEPATH}/drupalpages";
 	OLDpageholder="pagestested";
 	resultarray=();
 	# clear file
 	echo "" > ./checkthesefiles.js;
-	for x in "${pages[@]}"; do
+	for x in "${PAGES[@]}"; do
 		resultarray+=("\"http://${URL}/node/${x}\",");
 	done
 	sed "s|$OLDpageholder|${resultarray[*]}|g" TemplatesTest/access.js >> ./checkthesefiles.js;
@@ -50,7 +49,7 @@ function GENERATE_REPORT () {
 		X=${X/.\/reports\//};
 		X=${X/.json/};
 		nodenum=${X%.*};
-		if [[ "${USER}" == "vagrant" ]]; then
+		if [[ $(uname) == "Linux" ]]; then
 			sed -Ei "s|\[\{|\{\"node_$nodenum\": \[\{\"website\":\"$URL\",|" "./reports/${X}.json";
 		else
 			sed -Ei "" "s|\[\{|\{\"node_$nodenum\": \[\{|" "./reports/${X}.json";
@@ -59,8 +58,8 @@ function GENERATE_REPORT () {
 		js-beautify -rqf "./reports/${X}.json";
 	done
 	echo "{" > "${OUTPUT}";
-	for X in "${pages[@]}"; do
-		if [[ "${USER}" == "vagrant" ]]; then
+	for X in "${PAGES[@]}"; do
+		if [[ $(uname) == "Linux" ]]; then
 			sed -Ei "1 d" "./reports/${X}.json";
 			sed -Ei "$ d" "./reports/${X}.json";
 			sed -Ei "$ d" "./reports/${X}.json";
@@ -73,7 +72,7 @@ function GENERATE_REPORT () {
 		cat "./reports/${X}.json" >> "${OUTPUT}";
 	done
 	echo "}" >> "${OUTPUT}";
-	if [[ "${USER}" == "vagrant" ]]; then
+	if [[ $(uname) == "Linux" ]]; then
 		sed -Ei "s|}]|}],|g" "${OUTPUT}";
 		sed -Ei "s|}],,|}],|g" "${OUTPUT}";
 		sed -Ei "$ d" "${OUTPUT}";
@@ -91,7 +90,7 @@ function CLEAN () {
 	# REMOVE FILES
 	# rm -f reports/*;
 	# rm -rf ./reports/;
-	rm -f drupalpages;
+	
 	rm checkthesefiles.*;
 }
 
