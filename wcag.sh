@@ -29,14 +29,18 @@ function GENERATE_REPORT () {
 		drush "sqlq" "SELECT nid FROM node_access WHERE grant_view = '1'" > drupalpages;
 	fi
 	declare -a PAGESRAW=($(cat ./drupalpages));
-	readarray -t PAGES < <(printf '%s\n' "${PAGESRAW[@]}" | uniq | sort --numeric-sort --reverse)
+	declare -a PAGES=($(printf '%s\n' "${PAGESRAW[@]}" | uniq | sort --numeric-sort --reverse));
 	OLDPAGEHOLDER="pagestested";
 	declare -a RESULTARRAY=();
 	for x in "${PAGES[@]}"; do
 		RESULTARRAY+=("\"http://${URL}/node/${x}\",");
 	done
 	cp "./TemplatesTest/access.js" "./checkthesefiles.js";
-	sed -Ei 's|\[\]|\['"$(echo ${RESULTARRAY[@]})"'\]|g' "./checkthesefiles.js";
+	if [[ $(uname) == "Linux" ]]; then
+		sed -Ei 's|\[\]|\['"$(echo ${RESULTARRAY[@]})"'\]|g' "./checkthesefiles.js";
+	else
+		sed -Ei "" 's|\[\]|\['"$(echo ${RESULTARRAY[@]})"'\]|g' "./checkthesefiles.js";
+	fi
 	# sed "s|$OLDpageholder|${resultarray[@]}|g" "./TemplatesTest/access.js" > "./checkthesefiles.js";
 	node checkthesefiles.js;
 	for X in $(find ./reports/* | grep json); do
