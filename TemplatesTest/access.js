@@ -1,5 +1,5 @@
 var accessSniff  = require('access-sniff');
-var files = [pagestested];
+var files = [];
 
 accessSniff.start(files, {
     accessibilityLevel: 'WCAG2AAA',
