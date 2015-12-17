@@ -50,7 +50,7 @@ function GENERATE_REPORT () {
 		if [[ $(uname) == "Linux" ]]; then
 			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "s|\[\{|\{\"node_$nodenum\": \[\{\"website\":\"$URL\",|" "./reports/${X}.json"; fi
 		else
-			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "" "s|\[\{|\{\"node_$nodenum\": \[\{|" "./reports/${X}.json"; fi
+			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "" "s|\[\{|\{\"node_$nodenum\": \[\{\"website\":\"$URL\",|" "./reports/${X}.json"; fi
 		fi
 		if [[ -a "./reports/${X}.json" ]]; then echo "}" >> "./reports/${X}.json"; fi
 		js-beautify -rqf "./reports/${X}.json";
