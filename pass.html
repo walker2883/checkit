@@ -42,6 +42,36 @@
       background: #EEEEEE;
       transition: 0.1s all linear;
     }
+    .panel-title a[aria-expanded="false"]:after {
+      display: inline-block;  
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: inherit;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      float:right;
+      -webkit-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      transform: rotate(0deg);
+      transition: 0.3s all linear;
+      content: "\f0d7";
+    }
+    .panel-title a[aria-expanded="true"]:after {
+      display: inline-block;  
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: inherit;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      float:right;
+      -webkit-transform: rotate(180deg);
+      -moz-transform: rotate(180deg);
+      -o-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+      transform: rotate(180deg);
+      transition: 0.3s all linear;
+      content: "\f0d7";
+    }
     xmp {
       white-space: inherit;
       margin: 0px;
@@ -83,6 +113,7 @@
         var dataNids = [];
         var dataNidTotal = 0;
         var dataWebsite;
+        var dataPageTitle = "";
         var issue;
         var heading;
         var description;
@@ -91,6 +122,11 @@
         for (item in data) {
           dataNames[dataQuantity] = item;
           dataQuantity++;
+          dataItem = data[dataNames[0]];
+          dataWebsite = dataItem[0].website;
+          if (dataPageTitle == "") {
+            dataPageTitle += "<h1><small>" + dataWebsite + "</small></h1>";
+          }
         }
         for (nid in dataNames) {
           dataNid = dataNames[nid].replace("node_", "");
@@ -104,7 +140,7 @@
           dataOut += "<div class='panel panel-default'>";
           dataOut += "<div class='panel-heading' role='tab' id='heading-" + dataNid + "'>";
           dataOut += "<h4 class='panel-title'>";
-          dataOut += "<a role='button' data-toggle='collapse' data-parent='#accordion' href='#collapse-" + dataNid + "' aria-expanded='true' aria-controls='collapse-" + dataNid + "'>Node #" + dataNid + "</a>";
+          dataOut += "<a role='button' data-toggle='collapse' data-parent='#accordion' href='#collapse-" + dataNid + "' aria-expanded='false' aria-controls='collapse-" + dataNid + "'>Node #" + dataNid + "</a>";
           dataOut += "</h4>";
           dataOut += "</div>";
           dataOut += "<div id='collapse-" + dataNid + "' class='panel-collapse collapse' role='tabpanel' aria-labelledby='heading-" + dataNid + "'>";
@@ -142,7 +178,7 @@
         dataSummaryFormatted += "</div>";
         dataSummaryFormatted += "<div class='col-lg-6 col-md-6 col-sm-12 col-xs-12'>";
         dataSummaryFormatted += "<p>&nbsp;</p>";
-        dataSummaryFormatted += "<p>&nbsp;</p>";
+        dataSummaryFormatted += dataPageTitle;
         dataSummaryFormatted += "<p>&nbsp;</p>";
         dataSummaryFormatted += dataSummary;
         dataSummaryFormatted += "</div>";
