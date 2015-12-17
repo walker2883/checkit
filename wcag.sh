@@ -24,12 +24,12 @@ function GENERATE_REPORT () {
 	touch "drupalpages";
 	mkdir -p "${BASEPATH}/reports";
 	if [[ ! "${NAME}" == "" ]]; then
-		drush "${NAME}" "sqlq" "SELECT nid FROM node  WHERE status=1" > drupalpages;
+		drush "${NAME}" "sqlq" "SELECT nid FROM node_access WHERE grant_view = '1'" > drupalpages;
 	else
-		drush "sqlq" "SELECT nid FROM node  WHERE status=1" > drupalpages;
+		drush "sqlq" "SELECT nid FROM node_access WHERE grant_view = '1'" > drupalpages;
 	fi
 	declare -a PAGESRAW=($(cat ./drupalpages));
-	readarray -t PAGES < <(printf '%s\n' "${PAGESRAW[@]}" | sort --numeric-sort --reverse)
+	readarray -t PAGES < <(printf '%s\n' "${PAGESRAW[@]}" | uniq | sort --numeric-sort --reverse)
 	OLDPAGEHOLDER="pagestested";
 	declare -a RESULTARRAY=();
 	for x in "${PAGES[@]}"; do
@@ -44,26 +44,26 @@ function GENERATE_REPORT () {
 		X=${X/.json/};
 		nodenum=${X%.*};
 		if [[ $(uname) == "Linux" ]]; then
-			sed -Ei "s|\[\{|\{\"node_$nodenum\": \[\{\"website\":\"$URL\",|" "./reports/${X}.json";
+			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "s|\[\{|\{\"node_$nodenum\": \[\{\"website\":\"$URL\",|" "./reports/${X}.json"; fi
 		else
-			sed -Ei "" "s|\[\{|\{\"node_$nodenum\": \[\{|" "./reports/${X}.json";
+			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "" "s|\[\{|\{\"node_$nodenum\": \[\{|" "./reports/${X}.json"; fi
 		fi
-		echo "}" >> "./reports/${X}.json";
+		if [[ -a "./reports/${X}.json" ]]; then echo "}" >> "./reports/${X}.json"; fi
 		js-beautify -rqf "./reports/${X}.json";
 	done
 	echo "{" > "${OUTPUT}";
 	for X in "${PAGES[@]}"; do
 		if [[ $(uname) == "Linux" ]]; then
-			sed -Ei "1 d" "./reports/${X}.json";
-			sed -Ei "$ d" "./reports/${X}.json";
-			sed -Ei "$ d" "./reports/${X}.json";
+			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "1 d" "./reports/${X}.json"; fi
+			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "$ d" "./reports/${X}.json"; fi
+			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "$ d" "./reports/${X}.json"; fi
 		else
-			sed -Ei "" "1 d" "./reports/${X}.json";
-			sed -Ei "" "$ d" "./reports/${X}.json";
-			sed -Ei "" "$ d" "./reports/${X}.json";
+			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "" "1 d" "./reports/${X}.json"; fi
+			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "" "$ d" "./reports/${X}.json"; fi
+			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "" "$ d" "./reports/${X}.json"; fi
 		fi
-		echo "}]," >> "./reports/${X}.json";
-		cat "./reports/${X}.json" >> "${OUTPUT}";
+		if [[ -a "./reports/${X}.json" ]]; then echo "}]," >> "./reports/${X}.json"; fi
+		if [[ -a "./reports/${X}.json" ]]; then cat "./reports/${X}.json" >> "${OUTPUT}"; fi
 	done
 	echo "}" >> "${OUTPUT}";
 	if [[ $(uname) == "Linux" ]]; then
@@ -82,16 +82,19 @@ function GENERATE_REPORT () {
 
 function CLEAN () {
 	# REMOVE FILES
-	rm -f reports/*;
-	rm -rf ./reports/;
-	rm checkthesefiles.*;
+	if [[ -a "drupalpages" ]]; then rm -f drupalpages; fi
+	if [[ -a "reports/*" ]]; then rm -f reports/*; fi
+	if [[ -d "./reports/" ]]; then rm -rf ./reports/; fi
+	if [[ -a "checkthesefiles.js" ]]; then rm checkthesefiles.js; fi
 }
 
-if [[ -n "${1}" ]] && [[ -n "${2}" ]]; then
-	GETVAR "${1}" "${2}";
-elif [[ -n "${1}" ]]; then
-	GETVAR "${1}";
-elif [[ -z "${1}" ]]; then
+if [[ -n "${1}" ]]; then
+	if [[ -n "${2}" ]]; then
+		GETVAR "${1}" "${2}";
+	else
+		GETVAR "${1}";
+	fi
+else
 	GETVAR;
 fi
 
