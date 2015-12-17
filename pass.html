@@ -149,7 +149,7 @@
           dataOut += "<div id='collapse-" + dataNid + "' class='panel-collapse collapse' role='tabpanel' aria-labelledby='heading-" + dataNid + "'>";
           dataOut += "<div class='panel-body'>";
           dataOut += "<table class='table table-bordered table-hover table-condensed'>";
-          dataOut += "<tr class='active'><td colspan='2'>Node #" + dataNid + "<br />" + dataQuantityIssues + " issues were found</td><td colspan='2'><a class='btn btn-success gtp' href='http://" + dataWebsite + "/node/" + dataNid + "'>go to page</a></td></tr>";
+          dataOut += "<tr class='active'><td colspan='2'>Node #" + dataNid + "<br />" + dataQuantityIssues + " issues were found</td><td colspan='2'><a class='btn btn-success gtp' href='http://" + dataWebsite + "/node/" + dataNid + "'>Browse node #" + dataNid + "</a></td></tr>";
           for (dataIndex = 0; dataIndex < dataQuantityIssues; dataIndex++) {
             dataItem = data[dataNames[nid]][dataIndex];
             dataItem.rowClass = "";
@@ -173,8 +173,15 @@
         }
         dataImage = "<img src='./images/checkit.gif' />";
         dataImage += "<p>&nbsp;</p>";
-        dataSummary += "<p class='alert alert-danger'>" + dataNidTotal + " nodes have accessibility issues.</p>";
-        dataSummary += "<p class='alert alert-danger'>" + dataIssuesTotal + " issues in total have been identified.</p>";
+        dataSummary += "<div class='panel panel-danger'>";
+        dataSummary += "<div class='panel-heading'>";
+        dataSummary += "<h2 class='panel-title'>Issues summary</h3>";
+        dataSummary += "</div>";
+        dataSummary += "<div class='panel-body'>";
+        dataSummary += "<p>" + dataNidTotal + " nodes have accessibility issues.</p>";
+        dataSummary += "<p>" + dataIssuesTotal + " issues in total have been identified.</p>";
+        dataSummary += "</div>"
+        dataSummary += "</div>"
         dataSummaryFormatted += "<div class='row container'>";
         dataSummaryFormatted += "<div class='col-lg-6 col-md-6 col-sm-12 col-xs-12'>";
         dataSummaryFormatted += dataImage;
