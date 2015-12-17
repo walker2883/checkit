@@ -22,6 +22,9 @@
       margin: auto;
       display: block;
     }
+    .panel-body {
+      overflow-x: scroll;
+    }
   </style>
   <div id="test" class="container"></div>
   <style>
@@ -72,15 +75,25 @@
           dataNames[dataQuantity] = item;
           dataQuantity++;
         }
-        dataOut += "<div cols='4' class='row container'><table class='table table-bordered table-hover table-condensed'>";
         for (nid in dataNames) {
+          dataNid = dataNames[nid].replace("node_", "");
+          dataItem = data[dataNames[nid]];
           dataQuantityIssues = data[dataNames[nid]].length;
           dataIssuesTotal += dataQuantityIssues;
           dataNidTotal++;
-          dataNid = dataNames[nid].replace("node_", "");
           dataIssues[nid] += dataNames[0][0].issue;
-          // dataWebsite = dataNames[data[dataNames[nid]].length].website;
-          dataOut += "<tr class='active'><td colspan='2'>Node #" + dataNid + dataWebsite +  "<br />" + dataQuantityIssues + " issues were found</td><td colspan='2'><a class='disabled btn btn-success gtp' href='/node/" + dataNid + "'>go to page</a></td></tr>";
+          dataWebsite = dataItem[0].website;
+          dataOut += "<div class='panel-group' id='accordion' role='tablist' aria-multiselectable='true'>";
+          dataOut += "<div class='panel panel-default'>";
+          dataOut += "<div class='panel-heading' role='tab' id='heading-" + dataNid + "'>";
+          dataOut += "<h4 class='panel-title'>";
+          dataOut += "<a role='button' data-toggle='collapse' data-parent='#accordion' href='#collapse-" + dataNid + "' aria-expanded='true' aria-controls='collapse-" + dataNid + "'>Node #" + dataNid + "</a>";
+          dataOut += "</h4>";
+          dataOut += "</div>";
+          dataOut += "<div id='collapse-" + dataNid + "' class='panel-collapse collapse' role='tabpanel' aria-labelledby='heading-" + dataNid + "'>";
+          dataOut += "<div class='panel-body'>";
+          dataOut += "<div cols='4' class='row container'><table class='table table-bordered table-hover table-condensed'>";
+          dataOut += "<tr class='active'><td colspan='2'>Node #" + dataNid + "<br />" + dataQuantityIssues + " issues were found</td><td colspan='2'><a class='btn btn-success gtp' href='http://" + dataWebsite + "/node/" + dataNid + "'>go to page</a></td></tr>";
           for (dataIndex = 0; dataIndex < dataQuantityIssues; dataIndex++) {
             dataItem = data[dataNames[nid]][dataIndex];
             dataItem.rowClass = "";
@@ -96,8 +109,12 @@
             dataOut += "<td class='nodes'>" + dataNodes[dataIndex].replace(/(<([^>]+)>)/ig,"") + "</td>";
             dataOut += "</tr>";
           }
+          dataOut += "</table></row>";
+          dataOut += "</div>";
+          dataOut += "</div>";
+          dataOut += "</div>";
+          dataOut += "</div>";
         }
-        dataOut += "</table></row>";
         dataImage = "<div class='row container'><img src='./images/checkit.gif' /></div>";
         dataSummary = "<div class='row container'>";
         dataSummary += "<p class='alert alert-danger'>" + dataNidTotal + " nodes have accessibility issues.</p>";
