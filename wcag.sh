@@ -15,7 +15,7 @@ function GETVAR () {
 	URL=${URL/  /};
 	URL=${URL/ /};
 	URL=$(echo $URL | cut -d " " -f1);
-	BASEPATH="${PWD}";
+	BASEPATH="/${PWD}";
 	REPORTNAME="accessibility_report";
 	OUTPUT="${BASEPATH}/${REPORTNAME}.json";
 }
@@ -24,26 +24,20 @@ function GENERATE_REPORT () {
 	touch "drupalpages";
 	mkdir -p "${BASEPATH}/reports";
 	if [[ ! "${NAME}" == "" ]]; then
-		drush "${NAME}" "sqlq" "SELECT nid FROM node  WHERE status=1" > "${BASEPATH}/drupalpages";
+		drush "${NAME}" "sqlq" "SELECT nid FROM node  WHERE status=1" > drupalpages;
 	else
-		drush "sqlq" "SELECT nid FROM node  WHERE status=1" > "${BASEPATH}/drupalpages";
+		drush "sqlq" "SELECT nid FROM node  WHERE status=1" > drupalpages;
 	fi
-	# Grab node ids and update access,js
-	declare -a PAGESRAW=($(cat drupalpages));
-	declare -a PAGES=();
-	for X in $(echo "${pagesraw[@]}" | sort --numeric-sort); do
-		PAGES+=("${X}");
-	done
-	unset PAGESRAW;
-	rm -f "${BASEPATH}/drupalpages";
-	OLDpageholder="pagestested";
-	resultarray=();
-	# clear file
-	echo "" > ./checkthesefiles.js;
+	declare -a PAGESRAW=($(cat ./drupalpages));
+	readarray -t PAGES < <(printf '%s\n' "${PAGESRAW[@]}" | sort --numeric-sort --reverse)
+	OLDPAGEHOLDER="pagestested";
+	declare -a RESULTARRAY=();
 	for x in "${PAGES[@]}"; do
-		resultarray+=("\"http://${URL}/node/${x}\",");
+		RESULTARRAY+=("\"http://${URL}/node/${x}\",");
 	done
-	sed "s|$OLDpageholder|${resultarray[*]}|g" TemplatesTest/access.js >> ./checkthesefiles.js;
+	cp "./TemplatesTest/access.js" "./checkthesefiles.js";
+	sed -Ei 's|\[\]|\['"$(echo ${RESULTARRAY[@]})"'\]|g' "./checkthesefiles.js";
+	# sed "s|$OLDpageholder|${resultarray[@]}|g" "./TemplatesTest/access.js" > "./checkthesefiles.js";
 	node checkthesefiles.js;
 	for X in $(find ./reports/* | grep json); do
 		X=${X/.\/reports\//};
@@ -88,9 +82,8 @@ function GENERATE_REPORT () {
 
 function CLEAN () {
 	# REMOVE FILES
-	# rm -f reports/*;
-	# rm -rf ./reports/;
-	
+	rm -f reports/*;
+	rm -rf ./reports/;
 	rm checkthesefiles.*;
 }
 
