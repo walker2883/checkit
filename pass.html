@@ -25,9 +25,13 @@
     .panel-body {
       overflow-x: scroll;
     }
-  </style>
-  <div id="test" class="container"></div>
-  <style>
+    .panel-group {
+      margin: 0 0 5px 0;
+    }
+    .panel-title a {
+      display: block;
+      width: 100%;
+    }
     xmp {
       white-space: inherit;
       margin: 0px;
@@ -35,12 +39,14 @@
     .table {
       max-width:100%;
       width: 100%;
+      margin: auto;
       word-wrap: break-word;
     }
     .gtp {
       float: right
     }
   </style>
+  <div id="test" class="container"></div>
   <script type="text/javascript">
     $.ajaxSetup({
       beforeSend: function(xhr) {
@@ -52,8 +58,9 @@
     $(document).ready(function() {
       var jqXHR = $.get("accessibility_report.json", {}, function(data) {
         var dataOut = "";
-        var dataImage;
-        var dataSummary;
+        var dataImage = "";
+        var dataSummary = "";
+        var dataSummaryFormatted = "";
         var dataQuantity = 0;
         var dataIndex = 0;
         var dataNames = [];
@@ -83,7 +90,7 @@
           dataNidTotal++;
           dataIssues[nid] += dataNames[0][0].issue;
           dataWebsite = dataItem[0].website;
-          dataOut += "<div class='panel-group' id='accordion' role='tablist' aria-multiselectable='true'>";
+          dataOut += "<div class='panel-group' id='accordion-" + dataNid + "' role='tablist' aria-multiselectable='true'>";
           dataOut += "<div class='panel panel-default'>";
           dataOut += "<div class='panel-heading' role='tab' id='heading-" + dataNid + "'>";
           dataOut += "<h4 class='panel-title'>";
@@ -92,7 +99,7 @@
           dataOut += "</div>";
           dataOut += "<div id='collapse-" + dataNid + "' class='panel-collapse collapse' role='tabpanel' aria-labelledby='heading-" + dataNid + "'>";
           dataOut += "<div class='panel-body'>";
-          dataOut += "<div cols='4' class='row container'><table class='table table-bordered table-hover table-condensed'>";
+          dataOut += "<table class='table table-bordered table-hover table-condensed'>";
           dataOut += "<tr class='active'><td colspan='2'>Node #" + dataNid + "<br />" + dataQuantityIssues + " issues were found</td><td colspan='2'><a class='btn btn-success gtp' href='http://" + dataWebsite + "/node/" + dataNid + "'>go to page</a></td></tr>";
           for (dataIndex = 0; dataIndex < dataQuantityIssues; dataIndex++) {
             dataItem = data[dataNames[nid]][dataIndex];
@@ -109,18 +116,27 @@
             dataOut += "<td class='nodes'>" + dataNodes[dataIndex].replace(/(<([^>]+)>)/ig,"") + "</td>";
             dataOut += "</tr>";
           }
-          dataOut += "</table></row>";
+          dataOut += "</table>";
           dataOut += "</div>";
           dataOut += "</div>";
           dataOut += "</div>";
           dataOut += "</div>";
         }
-        dataImage = "<div class='row container'><img src='./images/checkit.gif' /></div>";
-        dataSummary = "<div class='row container'>";
+        dataImage = "<img src='./images/checkit.gif' />";
         dataSummary += "<p class='alert alert-danger'>" + dataNidTotal + " nodes have accessibility issues.</p>";
         dataSummary += "<p class='alert alert-danger'>" + dataIssuesTotal + " issues in total have been identified.</p>";
-        dataSummary += "</div>";
-        document.getElementById('test').innerHTML =  dataImage + dataSummary + dataOut;
+        dataSummaryFormatted += "<div class='row container'>";
+        dataSummaryFormatted += "<div class='col-lg-6 col-md-6 col-sm-12 col-xs-12'>";
+        dataSummaryFormatted += dataImage;
+        dataSummaryFormatted += "</div>";
+        dataSummaryFormatted += "<div class='col-lg-6 col-md-6 col-sm-12 col-xs-12'>";
+        dataSummaryFormatted += "<p>&nbsp;</p>";
+        dataSummaryFormatted += "<p>&nbsp;</p>";
+        dataSummaryFormatted += "<p>&nbsp;</p>";
+        dataSummaryFormatted += dataSummary;
+        dataSummaryFormatted += "</div>";
+        dataSummaryFormatted += "</div>";
+        document.getElementById('test').innerHTML = dataSummaryFormatted + dataOut;
         }).fail(function( jqxhr, textStatus, error ) {
           var err = textStatus + ', ' + error;
           console.log( "Request Failed: " + err);
