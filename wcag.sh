@@ -15,59 +15,61 @@ function GETVAR () {
 	URL=${URL/  /};
 	URL=${URL/ /};
 	URL=$(echo $URL | cut -d " " -f1);
-	BASEPATH="/${PWD}";
+	BASEPATH=$(dirname "$0");
 	REPORTNAME="accessibility_report";
+	REPORTDIRNAME="${BASEPATH}/reports";
 	OUTPUT="${BASEPATH}/${REPORTNAME}.json";
 }
 
 function GENERATE_REPORT () {
-	touch "drupalpages";
+	touch "${BASEPATH}/drupalpages";
 	mkdir -p "${BASEPATH}/reports";
 	if [[ ! "${NAME}" == "" ]]; then
-		drush "${NAME}" "sqlq" "SELECT nid FROM node_access WHERE grant_view = '1'" > drupalpages;
+		drush "${NAME}" "sqlq" "SELECT nid FROM node_access WHERE grant_view = '1'" > "${BASEPATH}/drupalpages";
 	else
-		drush "sqlq" "SELECT nid FROM node_access WHERE grant_view = '1'" > drupalpages;
+		drush "sqlq" "SELECT nid FROM node_access WHERE grant_view = '1'" > "${BASEPATH}/drupalpages";
 	fi
-	declare -a PAGESRAW=($(cat ./drupalpages));
+	declare -a PAGESRAW=($(cat "${BASEPATH}/drupalpages"));
 	declare -a PAGES=($(printf '%s\n' "${PAGESRAW[@]}" | uniq | sort --numeric-sort --reverse));
 	OLDPAGEHOLDER="pagestested";
 	declare -a RESULTARRAY=();
 	for x in "${PAGES[@]}"; do
 		RESULTARRAY+=("\"http://${URL}/node/${x}\",");
 	done
-	cp "./TemplatesTest/access.js" "./checkthesefiles.js";
+	cp "${BASEPATH}/TemplatesTest/access.js" "${BASEPATH}/checkthesefiles.js";
 	if [[ $(uname) == "Linux" ]]; then
-		sed -Ei 's|\[\]|\['"$(echo ${RESULTARRAY[@]})"'\]|g' "./checkthesefiles.js";
+		sed -Ei 's|\[\]|\['"$(echo ${RESULTARRAY[@]})"'\]|g' "${BASEPATH}/checkthesefiles.js";
+		sed -Ei 's|REPORTDIRNAME|'"$(echo ${REPORTDIRNAME})"'|g' "${BASEPATH}/checkthesefiles.js";
 	else
-		sed -Ei "" 's|\[\]|\['"$(echo ${RESULTARRAY[@]})"'\]|g' "./checkthesefiles.js";
+		sed -Ei "" 's|\[\]|\['"$(echo ${RESULTARRAY[@]})"'\]|g' "${BASEPATH}/checkthesefiles.js";
+		sed -Ei "" 's|REPORTDIRNAME|'"$(echo ${REPORTDIRNAME})"'|g' "${BASEPATH}/checkthesefiles.js";
 	fi
-	# sed "s|$OLDpageholder|${resultarray[@]}|g" "./TemplatesTest/access.js" > "./checkthesefiles.js";
-	node checkthesefiles.js;
-	for X in $(find ./reports/* | grep json); do
-		X=${X/.\/reports\//};
-		X=${X/.json/};
-		nodenum=${X%.*};
+	# sed "s|$OLDpageholder|${resultarray[@]}|g" "${BASEPATH}/TemplatesTest/access.js" > "${BASEPATH}/checkthesefiles.js";
+	node "${BASEPATH}/checkthesefiles.js";
+	for X in $(ls ${BASEPATH}/reports/* | grep json); do
+		nodenum=${X/${BASEPATH}\/reports\//};
+		nodenum=${nodenum/.json/};
 		if [[ $(uname) == "Linux" ]]; then
-			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "s|\[\{|\{\"node_$nodenum\": \[\{\"website\":\"$URL\",|" "./reports/${X}.json"; fi
+			if [[ -a "${X}" ]]; then sed -Ei "s|\[\{|\{\"node_$nodenum\": \[\{\"website\":\"$URL\",|" "${X}"; fi
 		else
-			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "" "s|\[\{|\{\"node_$nodenum\": \[\{\"website\":\"$URL\",|" "./reports/${X}.json"; fi
+			if [[ -a "${X}" ]]; then sed -Ei "" "s|\[\{|\{\"node_$nodenum\": \[\{\"website\":\"$URL\",|" "${X}"; fi
 		fi
-		if [[ -a "./reports/${X}.json" ]]; then echo "}" >> "./reports/${X}.json"; fi
-		js-beautify -rqf "./reports/${X}.json";
+		if [[ -a "${X}" ]]; then echo "}" >> "${X}"; fi
+		js-beautify -rqf "${X}";
 	done
 	echo "{" > "${OUTPUT}";
 	for X in "${PAGES[@]}"; do
 		if [[ $(uname) == "Linux" ]]; then
-			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "1 d" "./reports/${X}.json"; fi
-			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "$ d" "./reports/${X}.json"; fi
-			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "$ d" "./reports/${X}.json"; fi
+			if [[ -a "${REPORTDIRNAME}/${X}.json" ]]; then sed -Ei "1 d" "${REPORTDIRNAME}/${X}.json"; fi
+			if [[ -a "${REPORTDIRNAME}/${X}.json" ]]; then sed -Ei "$ d" "${REPORTDIRNAME}/${X}.json"; fi
+			if [[ -a "${REPORTDIRNAME}/${X}.json" ]]; then sed -Ei "$ d" "${REPORTDIRNAME}/${X}.json"; fi
 		else
-			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "" "1 d" "./reports/${X}.json"; fi
-			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "" "$ d" "./reports/${X}.json"; fi
-			if [[ -a "./reports/${X}.json" ]]; then sed -Ei "" "$ d" "./reports/${X}.json"; fi
+			if [[ -a "${REPORTDIRNAME}/${X}.json" ]]; then sed -Ei "" "1 d" "${REPORTDIRNAME}/${X}.json"; fi
+			if [[ -a "${REPORTDIRNAME}/${X}.json" ]]; then sed -Ei "" "$ d" "${REPORTDIRNAME}/${X}.json"; fi
+			if [[ -a "${REPORTDIRNAME}/${X}.json" ]]; then sed -Ei "" "$ d" "${REPORTDIRNAME}/${X}.json"; fi
 		fi
-		if [[ -a "./reports/${X}.json" ]]; then echo "}]," >> "./reports/${X}.json"; fi
-		if [[ -a "./reports/${X}.json" ]]; then cat "./reports/${X}.json" >> "${OUTPUT}"; fi
+		if [[ -a "${REPORTDIRNAME}/${X}.json" ]]; then echo "}]," >> "${REPORTDIRNAME}/${X}.json"; fi
+		if [[ -a "${REPORTDIRNAME}/${X}.json" ]]; then cat "${REPORTDIRNAME}/${X}.json" >> "${OUTPUT}"; fi
 	done
 	echo "}" >> "${OUTPUT}";
 	if [[ $(uname) == "Linux" ]]; then
@@ -86,10 +88,10 @@ function GENERATE_REPORT () {
 
 function CLEAN () {
 	# REMOVE FILES
-	if [[ -a "drupalpages" ]]; then rm -f drupalpages; fi
-	if [[ -a "reports/*" ]]; then rm -f reports/*; fi
-	if [[ -d "./reports/" ]]; then rm -rf ./reports/; fi
-	if [[ -a "checkthesefiles.js" ]]; then rm checkthesefiles.js; fi
+	if [[ -a "${BASEPATH}/drupalpages" ]]; then rm -f "${BASEPATH}/drupalpages"; fi
+	if [[ -a "${BASEPATH}/reports/*" ]]; then rm -f "${BASEPATH}/reports/*"; fi
+	if [[ -d "${BASEPATH}/reports/" ]]; then rm -rf "${BASEPATH}/reports/"; fi
+	if [[ -a "${BASEPATH}/checkthesefiles.js" ]]; then rm "${BASEPATH}/checkthesefiles.js"; fi
 }
 
 if [[ -n "${1}" ]]; then

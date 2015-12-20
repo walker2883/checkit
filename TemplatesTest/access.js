@@ -4,7 +4,7 @@ var files = [];
 accessSniff.start(files, {
   accessibilityLevel: 'WCAG2AAA',
   reportType: 'json',
-  reportLocation : 'reports',
+  reportLocation : 'REPORTDIRNAME',
   domElement: true,
   verbose:false,
   reportLevels: {
